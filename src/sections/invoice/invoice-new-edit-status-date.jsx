@@ -24,17 +24,22 @@ export function InvoiceNewEditStatusDate() {
         label="Invoice number"
         value={values.invoiceNumber}
       />
-
       <Field.Select fullWidth name="status" label="وضعیت" InputLabelProps={{ shrink: true }}>
-        {['paid', 'pending', 'overdue', 'draft'].map((option) => (
-          <MenuItem key={option} value={option} sx={{ textTransform: 'capitalize' }}>
-            {option}
+        {[
+          { value: 'paid', label: 'پرداخت‌شده' },
+          { value: 'pending', label: 'در انتظار' },
+          { value: 'overdue', label: 'سررسید گذشته' },
+          { value: 'draft', label: 'پیش‌نویس' },
+        ].map((option) => (
+          <MenuItem key={option.value} value={option.value} sx={{ textTransform: 'capitalize' }}>
+            {option.label}
           </MenuItem>
         ))}
       </Field.Select>
 
-      <Field.DatePicker name="createDate" label="Date create" />
-      <Field.DatePicker name="dueDate" label="Due date" />
+
+      <Field.DatePicker name="createDate" label="تاریخ شروع" />
+      <Field.DatePicker name="dueDate" label="سررسید" />
     </Stack>
   );
 }

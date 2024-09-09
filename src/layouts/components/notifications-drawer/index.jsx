@@ -23,11 +23,10 @@ import { CustomTabs } from 'src/components/custom-tabs';
 import { NotificationItem } from './notification-item';
 
 // ----------------------------------------------------------------------
-
 const TABS = [
-  { value: 'all', label: 'All', count: 22 },
-  { value: 'unread', label: 'Unread', count: 12 },
-  { value: 'archived', label: 'Archived', count: 10 },
+  { value: 'all', label: 'همه', count: 22 },
+  { value: 'unread', label: 'خوانده‌نشده', count: 12 },
+  { value: 'archived', label: 'بایگانی‌شده', count: 10 },
 ];
 
 // ----------------------------------------------------------------------
@@ -52,11 +51,11 @@ export function NotificationsDrawer({ data = [], sx, ...other }) {
   const renderHead = (
     <Stack direction="row" alignItems="center" sx={{ py: 2, pl: 2.5, pr: 1, minHeight: 68 }}>
       <Typography variant="h6" sx={{ flexGrow: 1 }}>
-        Notifications
+        اعلان‌ها
       </Typography>
 
       {!!totalUnRead && (
-        <Tooltip title="Mark all as read">
+        <Tooltip title="علامت‌گذاری همه به عنوان خوانده‌شده">
           <IconButton color="primary" onClick={handleMarkAllAsRead}>
             <Iconify icon="eva:done-all-fill" />
           </IconButton>
@@ -152,7 +151,7 @@ export function NotificationsDrawer({ data = [], sx, ...other }) {
 
         <Box sx={{ p: 1 }}>
           <Button fullWidth size="large">
-            View all
+            مشاهده همه
           </Button>
         </Box>
       </Drawer>

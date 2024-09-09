@@ -15,7 +15,7 @@ export function InvoiceDetailsView({ invoice }) {
         heading={invoice?.invoiceNumber}
         links={[
           { name: 'داشبورد', href: paths.dashboard.root },
-          { name: 'Invoice', href: paths.dashboard.invoice.root },
+          { name: 'فاکتور', href: paths.dashboard.invoice.root },
           { name: invoice?.invoiceNumber },
         ]}
         sx={{ mb: { xs: 3, md: 5 } }}

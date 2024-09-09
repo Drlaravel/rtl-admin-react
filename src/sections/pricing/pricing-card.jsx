@@ -45,7 +45,7 @@ export function PricingCard({ card, sx, ...other }) {
     <Typography variant="h2">Free</Typography>
   ) : (
     <Stack direction="row">
-      <Typography variant="h4">$</Typography>
+      <Typography variant="h4">تومان</Typography>
 
       <Typography variant="h2">{price}</Typography>
 

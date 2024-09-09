@@ -206,7 +206,7 @@ export function InvoiceNewEditDetails() {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Box sx={{ typography: 'subtitle2', color: 'text.disabled' }}>$</Box>
+                      <Box sx={{ typography: 'subtitle2', color: 'text.disabled' }}>تومان</Box>
                     </InputAdornment>
                   ),
                 }}
@@ -225,7 +225,7 @@ export function InvoiceNewEditDetails() {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Box sx={{ typography: 'subtitle2', color: 'text.disabled' }}>$</Box>
+                      <Box sx={{ typography: 'subtitle2', color: 'text.disabled' }}>تومان</Box>
                     </InputAdornment>
                   ),
                 }}
@@ -275,7 +275,7 @@ export function InvoiceNewEditDetails() {
         >
           <Field.Text
             size="small"
-            label="حمل و نقل ($)"
+            label="حمل و نقل (تومان)"
             name="shipping"
             type="number"
             sx={{ maxWidth: { md: 120 } }}
@@ -283,7 +283,7 @@ export function InvoiceNewEditDetails() {
 
           <Field.Text
             size="small"
-            label="تخفیف ($)"
+            label="تخفیف (تومان)"
             name="discount"
             type="number"
             sx={{ maxWidth: { md: 120 } }}

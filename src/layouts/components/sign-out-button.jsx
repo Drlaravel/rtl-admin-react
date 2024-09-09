@@ -41,7 +41,7 @@ export function SignOutButton({ onClose, ...other }) {
       router.refresh();
     } catch (error) {
       console.error(error);
-      toast.error('Unable to logout!');
+      toast.error('نمی توان از سیستم خارج شد!');
     }
   }, [checkUserSession, onClose, router]);
 
@@ -53,7 +53,7 @@ export function SignOutButton({ onClose, ...other }) {
       router.refresh();
     } catch (error) {
       console.error(error);
-      toast.error('Unable to logout!');
+      toast.error('نمی توان از سیستم خارج شد!');
     }
   }, [onClose, router, signOutAuth0]);
 
@@ -66,7 +66,7 @@ export function SignOutButton({ onClose, ...other }) {
       onClick={CONFIG.auth.method === 'auth0' ? handleLogoutAuth0 : handleLogout}
       {...other}
     >
-      Logout
+      خروج
     </Button>
   );
 }

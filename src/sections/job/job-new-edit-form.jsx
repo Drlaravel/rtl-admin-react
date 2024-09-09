@@ -298,7 +298,7 @@ export function JobNewEditForm({ currentJob }) {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Box sx={{ typography: 'subtitle2', color: 'text.disabled' }}>$</Box>
+                  <Box sx={{ typography: 'subtitle2', color: 'text.disabled' }}>تومان</Box>
                 </InputAdornment>
               ),
             }}

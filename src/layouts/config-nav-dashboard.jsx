@@ -107,12 +107,7 @@ export const navData = [
           { title: 'ادیت', path: paths.dashboard.invoice.demo.edit },
         ],
       },
-      {
-        title: 'بلاگ',
-        path: 'https://www.google.com/',
-        icon: ICONS.external,
-        info: <Iconify width={18} icon="prime:external-link" />,
-      },
+
       // {
       //   title: 'بلاگ',
       //   path: "https://www.google.com/",

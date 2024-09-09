@@ -277,7 +277,7 @@ function InputRange({ type, value, onFilters }) {
           fontWeight: 'fontWeightSemiBold',
         }}
       >
-        {`${type} ($)`}
+        {`${type} (تومان)`}
       </Typography>
 
       <InputBase

@@ -23,6 +23,12 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { usePopover, CustomPopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
+const STATUS_LABELS = {
+  pending: 'در انتظار',
+  paid: 'تکمیل شده',
+  overdue: 'لغو شده',
+  refunded: 'بازپرداخت شده',
+};
 
 export function InvoiceTableRow({ row, selected, onSelectRow, onViewRow, onEditRow, onDeleteRow }) {
   const confirm = useBoolean();
@@ -97,7 +103,8 @@ export function InvoiceTableRow({ row, selected, onSelectRow, onViewRow, onEditR
               'default'
             }
           >
-            {row.status}
+            {STATUS_LABELS[row.status] || row.status}
+
           </Label>
         </TableCell>
 

@@ -23,6 +23,13 @@ import { Iconify } from 'src/components/iconify';
 import { InvoicePDF } from './invoice-pdf';
 
 // ----------------------------------------------------------------------
+const STATUS_LABELS = {
+  pending: 'در انتظار',
+  paid: 'تکمیل شده',
+  cancelled: 'لغو شده',
+  overdue: 'بازپرداخت شده',
+  draft: 'پیش نویس',
+};
 
 export function InvoiceToolbar({ invoice, currentStatus, statusOptions, onChangeStatus }) {
   const router = useRouter();
@@ -111,10 +118,11 @@ export function InvoiceToolbar({ invoice, currentStatus, statusOptions, onChange
         >
           {statusOptions.map((option) => (
             <MenuItem key={option.value} value={option.value}>
-              {option.label}
+              {STATUS_LABELS[option.value] || option.label}
             </MenuItem>
           ))}
         </TextField>
+
       </Stack>
 
       <Dialog fullScreen open={view.value}>

@@ -99,7 +99,7 @@ function CollapsibleTableRow({ row }) {
                     <TableCell>Date</TableCell>
                     <TableCell>Customer</TableCell>
                     <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
+                    <TableCell align="right">Total price (تومان)</TableCell>
                   </TableRow>
                 </TableHead>
 

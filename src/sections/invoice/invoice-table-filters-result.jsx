@@ -52,7 +52,7 @@ export function InvoiceTableFiltersResult({ filters, totalResults, onResetPage, 
       </FiltersBlock>
 
       <FiltersBlock
-        label="Date:"
+        label="تاریخ:"
         isShow={Boolean(filters.state.startDate && filters.state.endDate)}
       >
         <Chip
