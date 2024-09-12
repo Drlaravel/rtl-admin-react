@@ -1,19 +1,20 @@
-import React, { useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import api from '../../api/api';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+
 const MySwal = withReactContent(Swal);
 
 // Interface definitions for TypeScript
 interface Payment {
-  payment_title: string;
+  title: string;
   amount: number;
   status: 'paid' | 'pending' | 'rejected';
   payment_date: string;
@@ -25,8 +26,6 @@ interface Domain {
   reminder_date: string;
   purchase_type: 'ours' | 'customer';
   status: 'yes' | 'no';
-
-
 }
 
 interface Host {
@@ -63,17 +62,17 @@ interface FormData {
   payments: Payment[];
   domains: Domain[];
   host: Host;
-  support: Support;
+  support: Support | null;
   details?: string;
 }
 
-// Function to display alerts using SweetAlert
 const showAlert = (title: string, text: string, icon: 'success' | 'error', confirmButtonText = 'باشه') => {
   return MySwal.fire({ title, text, icon, confirmButtonText });
 };
 
-const ProjectAdd: React.FC = () => {
+const ProjectEdit: React.FC = () => {
   const navigate = useNavigate();
+  const { projectId } = useParams<{ projectId: string }>();
   const { register, handleSubmit, control, setValue, watch, formState: { errors } } = useForm<FormData>({
     defaultValues: {
       name: '',
@@ -93,44 +92,82 @@ const ProjectAdd: React.FC = () => {
     },
   });
 
-  const { fields: paymentFields, append: appendPayment, remove: removePayment } = useFieldArray({
+  const { fields: paymentFields, replace: replacePayments } = useFieldArray({
     control,
     name: 'payments'
   });
 
-  const { fields: domainFields, append: appendDomain, remove: removeDomain } = useFieldArray({
+  const { fields: domainFields, replace: replaceDomains } = useFieldArray({
     control,
     name: 'domains'
   });
 
-  const [step, setStep] = useState<number>(1); // State to manage form steps
-
+  const [step, setStep] = useState<number>(1);
   const clientType = watch('client_type');
   const hostType = watch('host.purchase_type');
+
+  useEffect(() => {
+    const fetchProjectData = async () => {
+      try {
+        const response = await api.get(`/api/projects/${projectId}`);
+        const projectData = response.data.data;
+
+        console.log('Received project data:', projectData);
+
+        setValue('name', projectData.name || '');
+        setValue('status', projectData.status || 'start');
+        setValue('employer', projectData.employer || '');
+        setValue('contact_number', projectData.contact_number || '');
+
+        if (projectData.user) {
+          setValue('username', projectData.user.email || '');
+          setValue('password', projectData.user.password || '');
+        }
+
+        setValue('client_type', projectData.client_type || 'individual');
+        setValue('type', projectData.type || 'bronze');
+        setValue('company_name', projectData.company_name || '');
+        setValue('start_date', projectData.start_date || '');
+        setValue('end_date', projectData.end_date || '');
+        setValue('price', parseFloat(projectData.price) || 0);
+        setValue('details', projectData.details || '');
+        setValue('support', projectData.support || { duration: '6months', status: 'no' });
+
+        if (Array.isArray(projectData.payments)) {
+          replacePayments(projectData.payments);
+        }
+
+        if (Array.isArray(projectData.domains)) {
+          replaceDomains(projectData.domains);
+        }
+
+        if (Array.isArray(projectData.host) && projectData.host.length > 0) {
+          setValue('host', projectData.host[0]);
+        }
+
+      } catch (error) {
+        console.error('Error fetching project data:', error);
+        showAlert('خطا!', 'مشکل در دریافت داده‌های پروژه', 'error');
+      }
+    };
+
+    fetchProjectData();
+  }, [projectId, setValue, replacePayments, replaceDomains]);
 
   const onSubmit = async (data: FormData) => {
     if (step < 5) {
       setStep(prevStep => prevStep + 1);
     } else {
-      console.log('Project Created:', data);
-
       try {
-        const response = await api.post('/api/projects', data);
-        showAlert('موفقیت', 'پروژه با موفقیت ایجاد شد.', 'success');
-        console.log('Project Created:', response.data);
+        const response = await api.put(`/api/projects/${projectId}`, data);
+        showAlert('موفقیت', 'پروژه با موفقیت به‌روزرسانی شد.', 'success');
         navigate('/projects/list');
       } catch (error) {
-        console.log('error:', error);
-
         if (axios.isAxiosError(error)) {
-          if (error.response && error.response.data) {
-            const errorMessage = JSON.stringify(error.response.data);
-            showAlert('خطا!', `ایجاد پروژه با مشکل مواجه شد: ${errorMessage}`, 'error');
-          } else {
-            showAlert('خطا!', 'پاسخی از سرور دریافت نشد.', 'error');
-          }
+          const errorMessage = error.response?.data ? JSON.stringify(error.response.data) : 'پاسخی از سرور دریافت نشد.';
+          showAlert('خطا!', `به‌روزرسانی پروژه با مشکل مواجه شد: ${errorMessage}`, 'error');
         } else {
-          showAlert('خطا!', 'ایجاد پروژه با مشکل مواجه شد: خطای ناشناخته.', 'error');
+          showAlert('خطا!', 'به‌روزرسانی پروژه با مشکل مواجه شد: خطای ناشناخته.', 'error');
         }
       }
     }
@@ -767,4 +804,4 @@ const ProjectAdd: React.FC = () => {
   );
 };
 
-export default ProjectAdd;
+export default ProjectEdit;

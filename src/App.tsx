@@ -14,6 +14,7 @@ import FormLayout from './pages/Form/FormLayout';
 import Profile from './pages/Profile';
 import ProjectAdd from './pages/Projects/ProjectAdd';
 import ProjectsList from './pages/Projects/ProjectsList';
+import ProjectEdit from './pages/Projects/ProjectEdit';
 import Settings from './pages/Settings';
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
@@ -160,6 +161,7 @@ function App() {
 
         <Route path="/projects/list" element={<ProjectsList />} />
         <Route path="/projects/add" element={<ProjectAdd />} />
+        <Route path="/projects/edit/:projectId" element={<ProjectEdit />} />
         {/* <Route path="/domains/list" element={<DomainsList />} />
         <Route path="/domains/add" element={<DomainAdd />} />
         <Route path="/hosts/list" element={<HostsList />} />
