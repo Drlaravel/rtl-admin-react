@@ -35,15 +35,15 @@ const DropdownMenu = ({handleDelete, handleDetails }) => {
           
           <button
             className="flex w-full px-4 py-2 text-sm hover:bg-whiter hover:text-primary dark:hover:bg-meta-4"
-            onClick={handleDelete}
-          >
-            حذف
-          </button>
-          <button
-            className="flex w-full px-4 py-2 text-sm hover:bg-whiter hover:text-primary dark:hover:bg-meta-4"
             onClick={handleDetails}
           >
             جزئیات
+          </button>
+          <button
+            className="flex w-full px-4 py-2 text-sm hover:bg-whiter hover:text-primary dark:hover:bg-meta-4"
+            onClick={handleDelete}
+          >
+            حذف
           </button>
         </div>
       )}

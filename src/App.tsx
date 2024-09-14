@@ -19,8 +19,9 @@ import Settings from './pages/Settings';
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
-// import DomainsList from './pages/Domains/DomainsList';
-// import DomainAdd from './pages/Domains/DomainAdd';
+import DomainsList from './pages/Domains/DomainsList';
+import DomainAdd from './pages/Domains/DomainAdd';
+import DomainEdit from './pages/Domains/DomainEdit';
 // import HostsList from './pages/Hosts/HostsList';
 // import HostAdd from './pages/Hosts/HostAdd';
 // import SupportsList from './pages/Supports/SupportsList';
@@ -162,9 +163,10 @@ function App() {
         <Route path="/projects/list" element={<ProjectsList />} />
         <Route path="/projects/add" element={<ProjectAdd />} />
         <Route path="/projects/edit/:projectId" element={<ProjectEdit />} />
-        {/* <Route path="/domains/list" element={<DomainsList />} />
+       <Route path="/domains/list" element={<DomainsList />} />
         <Route path="/domains/add" element={<DomainAdd />} />
-        <Route path="/hosts/list" element={<HostsList />} />
+        <Route path="/domains/edit/:id" element={<DomainEdit />} />
+          {/*<Route path="/hosts/list" element={<HostsList />} />
         <Route path="/hosts/add" element={<HostAdd />} />
         <Route path="/supports/list" element={<SupportsList />} />
         <Route path="/supports/add" element={<SupportAdd />} />
