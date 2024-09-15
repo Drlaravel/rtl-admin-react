@@ -9,22 +9,24 @@ import Pagination from '../../components/Pagination/Pagination';
 
 const MySwal = withReactContent(Swal);
 
-interface Domain {
+interface Support {
   id: number;
-  project_id: number;
-  user_id: number;
+  project_id: number | null;
+  user_id: number | null;
   name: string;
-  expiry_date: string;
-  reminder_date: string;
-  purchase_type: 'ours' | 'customer';
-  reminder: boolean;
+  status: 'yes' | 'no';
+  duration: '6months' | '12months';
   price: number | null;
-  user_name: string | null;
+  expiry_date: string | null;
+  reminder: boolean;
   project_name: string | null;
+  user_name: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
-const DomainList: React.FC = () => {
-  const [domains, setDomains] = useState<Domain[]>([]);
+const SupportList: React.FC = () => {
+  const [supports, setSupports] = useState<Support[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [pageCount, setPageCount] = useState<number>(0);
@@ -43,20 +45,20 @@ const DomainList: React.FC = () => {
     []
   );
 
-  const fetchDomains = useCallback(
+  const fetchSupports = useCallback(
     async (page = 1) => {
       try {
-        const response = await api.get(`/api/domains?page=${page}`);
-        console.log(response.data)
+        const response = await api.get(`/api/supports?page=${page}`);
+        console.log(response.data); // بررسی داده‌های دریافتی
         if (response.data && Array.isArray(response.data.data)) {
-          setDomains(response.data.data);
+          setSupports(response.data.data);
           setPageCount(response.data.meta.last_page); // تنظیم تعداد صفحات صحیح
         } else {
           throw new Error('Invalid response structure');
         }
       } catch (error) {
-        console.error('Error fetching domains:', error);
-        showAlert('خطا!', 'دریافت دامنه‌ها با مشکل مواجه شد.', 'error');
+        console.error('Error fetching supports:', error);
+        showAlert('خطا!', 'دریافت پشتیبانی‌ها با مشکل مواجه شد.', 'error');
       } finally {
         setLoading(false);
       }
@@ -65,17 +67,17 @@ const DomainList: React.FC = () => {
   );
 
   useEffect(() => {
-    fetchDomains(currentPage + 1); // بارگذاری دامنه‌ها بر اساس صفحه جاری
-  }, [fetchDomains, currentPage]);
+    fetchSupports(currentPage + 1); // بارگذاری پشتیبانی‌ها بر اساس صفحه جاری
+  }, [fetchSupports, currentPage]);
 
   const handlePageChange = (selectedPage: { selected: number }) => {
     setCurrentPage(selectedPage.selected); // تنظیم شماره صفحه فعلی
   };
 
   const handleDelete = useCallback(
-    (domainId: number) => {
+    (supportId: number) => {
       MySwal.fire({
-        title: 'آیا از حذف این دامنه مطمئن هستید؟',
+        title: 'آیا از حذف این پشتیبانی مطمئن هستید؟',
         text: 'این عملیات قابل بازگشت نیست!',
         icon: 'warning',
         showCancelButton: true,
@@ -86,12 +88,12 @@ const DomainList: React.FC = () => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            await api.delete(`/api/domains/${domainId}`);
-            setDomains((prevDomains) => prevDomains.filter((domain) => domain.id !== domainId));
-            showAlert('حذف شد!', 'دامنه با موفقیت حذف شد.', 'success');
+            await api.delete(`/api/supports/${supportId}`);
+            setSupports((prevSupports) => prevSupports.filter((support) => support.id !== supportId));
+            showAlert('حذف شد!', 'پشتیبانی با موفقیت حذف شد.', 'success');
           } catch (error) {
-            console.error('Error deleting domain:', error);
-            showAlert('خطا!', 'حذف دامنه با مشکل مواجه شد.', 'error');
+            console.error('Error deleting support:', error);
+            showAlert('خطا!', 'حذف پشتیبانی با مشکل مواجه شد.', 'error');
           }
         }
       });
@@ -99,8 +101,9 @@ const DomainList: React.FC = () => {
     [showAlert]
   );
 
-  const handleDetails = (domainId: number) => {
-    navigate(`/domains/edit/${domainId}`);
+  const handleDetails = (supportId: number) => {
+    console.log('Navigating to edit support with ID:', supportId);
+    navigate(`/supports/edit/${supportId}`);
   };
 
   if (loading) {
@@ -108,10 +111,10 @@ const DomainList: React.FC = () => {
   }
 
   return (
-    <div className="domain-list">
+    <div className="support-list">
       {/* Header */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-title-md2 font-bold text-black dark:text-white">لیست دامنه‌ها</h2>
+        <h2 className="text-title-md2 font-bold text-black dark:text-white">لیست پشتیبانی‌ها</h2>
         <nav>
           <ol className="flex items-center gap-2">
             <li>
@@ -120,33 +123,33 @@ const DomainList: React.FC = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/domains" className={`font-medium`}>
-                دامنه ها
+              <NavLink to="/supports" className={`font-medium`}>
+                پشتیبانی ها
               </NavLink>
             </li>
             <li>
               <NavLink to="#" className={`font-medium text-primary`}>
-                لیست دامنه‌ها
+                لیست پشتیبانی‌ها
               </NavLink>
             </li>
           </ol>
         </nav>
       </div>
 
-      <TableComponent<Domain>
-        headers={['ایدی', 'نام پروژه/کاربر', 'نام دامنه', 'تاریخ انقضا', 'تاریخ یادآوری', 'نوع خرید', 'قیمت', 'یاداوری']}
-        data={domains.map((domain) => ({
-          id: domain.id,
-          name: domain.project_name || domain.user_name, 
-          domain_name: domain.name,
-          expiry_date: domain.expiry_date,
-          reminder_date: domain.reminder_date,
-          purchase_type: domain.purchase_type === 'ours' ? 'خریداری شده توسط ما' : 'خریداری شده توسط مشتری',
-          price: domain.price ? `${new Intl.NumberFormat().format(domain.price)} تومان` : 'رایگان',
-          reminder: domain.reminder ? 'معتبر' : 'غیرمعتبر(نیاز به تمدید)',
+      <TableComponent<Support>
+        headers={['ایدی','نام پروژه/کاربر', 'نام پشتیبانی', 'وضعیت', 'مدت زمان', 'قیمت', 'تاریخ انقضا', 'یاداوری']}
+        data={supports.map((support) => ({
+          id: support.id,
+          name: support.project_name || support.user_name,
+          support_name: support.name,
+          status: support.status === 'yes' ? 'فعال' : 'غیرفعال',
+          duration: support.duration === '6months' ? '6 ماه' : '12 ماه',
+          price: support.price ? `${new Intl.NumberFormat().format(support.price)} تومان` : 'رایگان',
+          expiry_date: support.expiry_date ? support.expiry_date : 'نامشخص',
+          reminder: support.reminder ? 'فعال' : 'غیرفعال',
         }))}
-        renderActions={(domain) => (
-          <DropdownMenu handleDelete={() => handleDelete(domain.id)} handleDetails={() => handleDetails(domain.id)} />
+        renderActions={(support) => (
+          <DropdownMenu handleDelete={() => handleDelete(support.id)} handleDetails={() => handleDetails(support.id)} />
         )}
       />
 
@@ -160,4 +163,4 @@ const DomainList: React.FC = () => {
   );
 };
 
-export default React.memo(DomainList);
+export default React.memo(SupportList);

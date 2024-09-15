@@ -5,10 +5,10 @@ import api from '../../api/api';
 import { NavLink, useNavigate } from 'react-router-dom';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DropdownMenu from '../../components/DropdownMenu/DropdownMenu';
+import Pagination from '../../components/Pagination/Pagination'; // Import the Pagination component
 
 const MySwal = withReactContent(Swal);
 
-// تعریف نوع داده‌ای برای پروژه
 interface Project {
   id: number;
   name: string;
@@ -23,6 +23,8 @@ interface Project {
 const ProjectList: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [pageCount, setPageCount] = useState<number>(0); // State to manage total pages
   const navigate = useNavigate();
 
   const showAlert = useCallback((title: string, text: string, icon: 'success' | 'error' | 'warning', confirmButtonText = 'باشه') => {
@@ -35,11 +37,12 @@ const ProjectList: React.FC = () => {
     });
   }, []);
 
-  const fetchProjects = useCallback(async () => {
+  const fetchProjects = useCallback(async (page = 1) => {
     try {
-      const response = await api.get('/api/projects');
+      const response = await api.get(`/api/projects?page=${page}`);
       if (response.data && Array.isArray(response.data.data)) {
         setProjects(response.data.data);
+        setPageCount(response.data.meta.last_page); // Set the correct number of pages
       } else {
         throw new Error('Invalid response structure');
       }
@@ -52,8 +55,12 @@ const ProjectList: React.FC = () => {
   }, [showAlert]);
 
   useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
+    fetchProjects(currentPage + 1); // Fetch projects based on the current page
+  }, [fetchProjects, currentPage]);
+
+  const handlePageChange = (selectedPage: { selected: number }) => {
+    setCurrentPage(selectedPage.selected); // Update the current page
+  };
 
   const handleDelete = useCallback((projectId: number) => {
     MySwal.fire({
@@ -108,7 +115,7 @@ const ProjectList: React.FC = () => {
       </div>
 
       <TableComponent<Project>
-        headers={['نام پروژه', 'نام کارفرما', 'شماره تماس', 'زمان اتمام پروژه', 'وضعیت پروژه', 'هزینه ی کل پروژه', 'هزینه ی پرداخت شده', ]}
+        headers={['نام پروژه', 'نام کارفرما', 'شماره تماس', 'زمان اتمام پروژه', 'وضعیت پروژه', 'هزینه ی کل پروژه', 'هزینه ی پرداخت شده',]}
         data={projects.map(project => ({
           name: project.name,
           employer: project.employer,
@@ -124,6 +131,12 @@ const ProjectList: React.FC = () => {
             handleDetails={() => handleDetails(project.id)}
           />
         )}
+      />
+      {/* Pagination */}
+      <Pagination
+        pageCount={pageCount}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
       />
     </div>
   );

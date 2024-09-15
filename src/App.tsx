@@ -22,10 +22,13 @@ import Buttons from './pages/UiElements/Buttons';
 import DomainsList from './pages/Domains/DomainsList';
 import DomainAdd from './pages/Domains/DomainAdd';
 import DomainEdit from './pages/Domains/DomainEdit';
-// import HostsList from './pages/Hosts/HostsList';
-// import HostAdd from './pages/Hosts/HostAdd';
-// import SupportsList from './pages/Supports/SupportsList';
-// import SupportAdd from './pages/Supports/SupportAdd';
+import HostsList from './pages/Hosts/HostsList';
+import HostAdd from './pages/Hosts/HostAdd';
+import HostEdit from './pages/Hosts/HostEdit';
+
+import SupportsList from './pages/Supports/SupportsList';
+import SupportAdd from './pages/Supports/SupportAdd';
+import SupportEdit from './pages/Supports/SupportEdit';
 // import InvoicesList from './pages/Invoices/InvoicesList';
 // import InvoiceAdd from './pages/Invoices/InvoiceAdd';
 // import UsersList from './pages/Users/UsersList';
@@ -166,11 +169,15 @@ function App() {
        <Route path="/domains/list" element={<DomainsList />} />
         <Route path="/domains/add" element={<DomainAdd />} />
         <Route path="/domains/edit/:id" element={<DomainEdit />} />
-          {/*<Route path="/hosts/list" element={<HostsList />} />
+        <Route path="/hosts/list" element={<HostsList />} />
         <Route path="/hosts/add" element={<HostAdd />} />
+        <Route path="/hosts/edit/:id" element={<HostEdit />} />
+
         <Route path="/supports/list" element={<SupportsList />} />
         <Route path="/supports/add" element={<SupportAdd />} />
-        <Route path="/invoices/list" element={<InvoicesList />} />
+        <Route path="/supports/edit/:id" element={<SupportEdit />} />
+
+          {/*<Route path="/invoices/list" element={<InvoicesList />} />
         <Route path="/invoices/add" element={<InvoiceAdd />} />
         <Route path="/users/list" element={<UsersList />} />
         <Route path="/users/add" element={<UserAdd />} />

@@ -9,22 +9,22 @@ import Pagination from '../../components/Pagination/Pagination';
 
 const MySwal = withReactContent(Swal);
 
-interface Domain {
+interface Host {
   id: number;
-  project_id: number;
-  user_id: number;
-  name: string;
+  username: string;
+  password: string;
+  link: string;
   expiry_date: string;
   reminder_date: string;
+  space: string;
+  company_name: string;
+  price: number;
   purchase_type: 'ours' | 'customer';
   reminder: boolean;
-  price: number | null;
-  user_name: string | null;
-  project_name: string | null;
 }
 
-const DomainList: React.FC = () => {
-  const [domains, setDomains] = useState<Domain[]>([]);
+const HostList: React.FC = () => {
+  const [hosts, setHosts] = useState<Host[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [pageCount, setPageCount] = useState<number>(0);
@@ -43,20 +43,20 @@ const DomainList: React.FC = () => {
     []
   );
 
-  const fetchDomains = useCallback(
+  const fetchHosts = useCallback(
     async (page = 1) => {
       try {
-        const response = await api.get(`/api/domains?page=${page}`);
+        const response = await api.get(`/api/hosts?page=${page}`);
         console.log(response.data)
         if (response.data && Array.isArray(response.data.data)) {
-          setDomains(response.data.data);
+          setHosts(response.data.data);
           setPageCount(response.data.meta.last_page); // تنظیم تعداد صفحات صحیح
         } else {
           throw new Error('Invalid response structure');
         }
       } catch (error) {
-        console.error('Error fetching domains:', error);
-        showAlert('خطا!', 'دریافت دامنه‌ها با مشکل مواجه شد.', 'error');
+        console.error('Error fetching hosts:', error);
+        showAlert('خطا!', 'دریافت هاست‌ها با مشکل مواجه شد.', 'error');
       } finally {
         setLoading(false);
       }
@@ -65,17 +65,17 @@ const DomainList: React.FC = () => {
   );
 
   useEffect(() => {
-    fetchDomains(currentPage + 1); // بارگذاری دامنه‌ها بر اساس صفحه جاری
-  }, [fetchDomains, currentPage]);
+    fetchHosts(currentPage + 1); // بارگذاری هاست‌ها بر اساس صفحه جاری
+  }, [fetchHosts, currentPage]);
 
   const handlePageChange = (selectedPage: { selected: number }) => {
     setCurrentPage(selectedPage.selected); // تنظیم شماره صفحه فعلی
   };
 
   const handleDelete = useCallback(
-    (domainId: number) => {
+    (hostId: number) => {
       MySwal.fire({
-        title: 'آیا از حذف این دامنه مطمئن هستید؟',
+        title: 'آیا از حذف این هاست مطمئن هستید؟',
         text: 'این عملیات قابل بازگشت نیست!',
         icon: 'warning',
         showCancelButton: true,
@@ -86,12 +86,12 @@ const DomainList: React.FC = () => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            await api.delete(`/api/domains/${domainId}`);
-            setDomains((prevDomains) => prevDomains.filter((domain) => domain.id !== domainId));
-            showAlert('حذف شد!', 'دامنه با موفقیت حذف شد.', 'success');
+            await api.delete(`/api/hosts/${hostId}`);
+            setHosts((prevHosts) => prevHosts.filter((host) => host.id !== hostId));
+            showAlert('حذف شد!', 'هاست با موفقیت حذف شد.', 'success');
           } catch (error) {
-            console.error('Error deleting domain:', error);
-            showAlert('خطا!', 'حذف دامنه با مشکل مواجه شد.', 'error');
+            console.error('Error deleting host:', error);
+            showAlert('خطا!', 'حذف هاست با مشکل مواجه شد.', 'error');
           }
         }
       });
@@ -99,8 +99,8 @@ const DomainList: React.FC = () => {
     [showAlert]
   );
 
-  const handleDetails = (domainId: number) => {
-    navigate(`/domains/edit/${domainId}`);
+  const handleDetails = (hostId: number) => {
+    navigate(`/hosts/edit/${hostId}`);
   };
 
   if (loading) {
@@ -108,10 +108,10 @@ const DomainList: React.FC = () => {
   }
 
   return (
-    <div className="domain-list">
+    <div className="host-list">
       {/* Header */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-title-md2 font-bold text-black dark:text-white">لیست دامنه‌ها</h2>
+        <h2 className="text-title-md2 font-bold text-black dark:text-white">لیست هاست‌ها</h2>
         <nav>
           <ol className="flex items-center gap-2">
             <li>
@@ -120,33 +120,34 @@ const DomainList: React.FC = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/domains" className={`font-medium`}>
-                دامنه ها
+              <NavLink to="/hosts" className={`font-medium`}>
+                هاست‌ها
               </NavLink>
             </li>
             <li>
               <NavLink to="#" className={`font-medium text-primary`}>
-                لیست دامنه‌ها
+                لیست هاست‌ها
               </NavLink>
             </li>
           </ol>
         </nav>
       </div>
 
-      <TableComponent<Domain>
-        headers={['ایدی', 'نام پروژه/کاربر', 'نام دامنه', 'تاریخ انقضا', 'تاریخ یادآوری', 'نوع خرید', 'قیمت', 'یاداوری']}
-        data={domains.map((domain) => ({
-          id: domain.id,
-          name: domain.project_name || domain.user_name, 
-          domain_name: domain.name,
-          expiry_date: domain.expiry_date,
-          reminder_date: domain.reminder_date,
-          purchase_type: domain.purchase_type === 'ours' ? 'خریداری شده توسط ما' : 'خریداری شده توسط مشتری',
-          price: domain.price ? `${new Intl.NumberFormat().format(domain.price)} تومان` : 'رایگان',
-          reminder: domain.reminder ? 'معتبر' : 'غیرمعتبر(نیاز به تمدید)',
+      <TableComponent<Host>
+        headers={['ایدی', 'نام کاربری', 'لینک', 'تاریخ انقضا', 'تاریخ یادآوری', 'فضا', 'قیمت', 'نوع خرید', 'یاداوری']}
+        data={hosts.map((host) => ({
+          id: host.id,
+          username: host.username,
+          link: <a href={host.link} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">لینک</a>,
+          expiry_date: host.expiry_date,
+          reminder_date: host.reminder_date,
+          space: host.space,
+          price: host.price ? `${new Intl.NumberFormat().format(host.price)} تومان` : 'رایگان',
+          purchase_type: host.purchase_type === 'ours' ? 'خریداری شده توسط ما' : 'خریداری شده توسط مشتری',
+          reminder: host.reminder ? 'معتبر' : 'غیرمعتبر(نیاز به تمدید)',
         }))}
-        renderActions={(domain) => (
-          <DropdownMenu handleDelete={() => handleDelete(domain.id)} handleDetails={() => handleDetails(domain.id)} />
+        renderActions={(host) => (
+          <DropdownMenu handleDelete={() => handleDelete(host.id)} handleDetails={() => handleDetails(host.id)} />
         )}
       />
 
@@ -160,4 +161,4 @@ const DomainList: React.FC = () => {
   );
 };
 
-export default React.memo(DomainList);
+export default React.memo(HostList);

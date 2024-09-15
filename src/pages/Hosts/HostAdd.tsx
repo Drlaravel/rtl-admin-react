@@ -8,43 +8,46 @@ import api from '../../api/api';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
-import Select, { StylesConfig, InputActionMeta } from 'react-select';
+import Select, { StylesConfig } from 'react-select';
 
 const MySwal = withReactContent(Swal);
 
 const customStyles: StylesConfig<any, false> = {
   control: (provided) => ({
     ...provided,
-    borderColor: 'rgb(61 77 95)', // تغییر رنگ مرزی
-    borderWidth: '1.5px', // تغییر ضخامت مرزی
-    borderRadius: '5px', // تنظیم گردی حاشیه
-    padding: '0.5rem', // تغییر فاصله داخلی
-    backgroundColor: 'transparent', // پس‌زمینه شفاف
-    color: '#ffffff', // رنگ نوشته
+    borderColor: 'rgb(61 77 95)',
+    borderWidth: '1.5px',
+    borderRadius: '5px',
+    padding: '0.5rem',
+    backgroundColor: 'transparent',
+    color: '#ffffff',
   }),
   option: (provided, state) => ({
     ...provided,
-    backgroundColor: state.isFocused ? '#2563eb' : 'white', // رنگ پس‌زمینه برای گزینه‌های انتخابی
-    color: state.isFocused ? 'white' : '#0062ff', // رنگ نوشته برای گزینه‌های انتخابی
+    backgroundColor: state.isFocused ? '#2563eb' : 'white',
+    color: state.isFocused ? 'white' : '#0062ff',
   }),
   placeholder: (provided) => ({
     ...provided,
-    color: '#ffffff', // رنگ placeholder
+    color: '#ffffff',
   }),
   singleValue: (provided) => ({
     ...provided,
-    color: '#ffffff', // تغییر رنگ متن به سفید
+    color: '#ffffff',
   }),
 };
 
-
-interface DomainFormData {
-  name: string;
+interface HostFormData {
+  username: string;
+  password: string;
+  link: string;
   expiry_date: string;
   reminder_date: string;
-  purchase_type: 'ours' | 'customer';
-  reminder: '0' | '1'; // Active (0) or Inactive (1)
+  space: string;
+  company_name: string;
   price: number;
+  purchase_type: 'ours' | 'customer';
+  reminder: string;
   associated_with: 'project' | 'user' | '';
   project_id: number | null;
   user_id: number | null;
@@ -56,18 +59,24 @@ interface OptionType {
   label: string;
 }
 
-const DomainAdd: React.FC = () => {
+const HostAdd: React.FC = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit, control, setValue, watch, reset, formState: { errors } } = useForm<DomainFormData>({
+  const { register, handleSubmit, control, setValue, watch, reset, formState: { errors } } = useForm<HostFormData>({
     defaultValues: {
-      name: '',
+      username: '',
+      password: '',
+      link: '',
       expiry_date: '',
       reminder_date: '',
+      space: '',
+      company_name: '',
+      price: 0,
       purchase_type: 'ours',
       reminder: '0',
       associated_with: '',
       project_id: null,
       user_id: null,
+      shouldCreateInvoice: false,
     }
   });
 
@@ -80,19 +89,18 @@ const DomainAdd: React.FC = () => {
     return MySwal.fire({ title, text, icon, confirmButtonText });
   };
 
-  const onSubmit = async (data: DomainFormData) => {
+  const onSubmit = async (data: HostFormData) => {
     try {
-      await api.post('/api/domains', data);
-      showAlert('موفقیت', 'دامنه با موفقیت ایجاد شد.', 'success');
+      await api.post('/api/hosts', data);
+      showAlert('موفقیت', 'هاست با موفقیت ایجاد شد.', 'success');
       reset();
-      navigate('/domains/list');
+      navigate('/hosts/list');
     } catch (error) {
-      console.error('Error creating domain:', error);
-      showAlert('خطا!', 'ایجاد دامنه با مشکل مواجه شد.', 'error');
+      console.error('Error creating host:', error);
+      showAlert('خطا!', 'ایجاد هاست با مشکل مواجه شد.', 'error');
     }
   };
 
-  // Fetch all users and projects once
   useEffect(() => {
     const fetchAllData = async () => {
       try {
@@ -124,7 +132,6 @@ const DomainAdd: React.FC = () => {
     fetchAllData();
   }, []);
 
-  // Filter functions
   const handleUserInputChange = (inputValue: string) => {
     const filtered = users.filter(user =>
       user.label.toLowerCase().includes(inputValue.toLowerCase())
@@ -140,6 +147,7 @@ const DomainAdd: React.FC = () => {
   };
 
   const associatedWith = watch('associated_with');
+  const purchaseType = watch('purchase_type'); // برای مشاهده تغییرات نوع خرید
 
   useEffect(() => {
     if (associatedWith === 'project') {
@@ -151,41 +159,65 @@ const DomainAdd: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="ایجاد دامنه جدید" />
+      <Breadcrumb pageName="ایجاد هاست جدید" />
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-          <h3 className="font-medium text-black dark:text-white">ایجاد دامنه جدید</h3>
+          <h3 className="font-medium text-black dark:text-white">ایجاد هاست جدید</h3>
         </div>
         <div className="p-6.5">
           <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Domain Information */}
+            {/* Host Information */}
             <div className="my-4.5 grid md:grid-cols-2 gap-6">
               <div className="my-4.5">
-                <label className="block mb-2.5 text-black dark:text-white">نام دامنه</label>
+                <label className="block mb-2.5 text-black dark:text-white">نام کاربری</label>
                 <input
                   type="text"
-                  {...register('name', { required: 'نام دامنه الزامی است.' })}
-                  className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.name ? 'border-red-500' : 'border-stroke'}`}
-                  placeholder="نام دامنه"
+                  {...register('username', { required: 'نام کاربری الزامی است.' })}
+                  className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.username ? 'border-red-500' : 'border-stroke'}`}
+                  placeholder="نام کاربری"
                 />
-                {errors.name && <p className="text-danger text-3 mt-2.5">{errors.name.message}</p>}
+                {errors.username && <p className="text-danger text-3 mt-2.5">{errors.username.message}</p>}
               </div>
 
               <div className="my-4.5">
-                <label className="block mb-2.5 text-black dark:text-white">هزینه دامنه</label>
+                <label className="block mb-2.5 text-black dark:text-white">رمز عبور</label>
                 <input
-                  type="text"
-                  {...register('price', { required: 'هزینه دامنه الزامی است.' })}
-                  className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.price ? 'border-red-500' : 'border-stroke'}`}
-                  placeholder="هزینه دامنه"
+                  type="password"
+                  {...register('password', { required: 'رمز عبور الزامی است.' })}
+                  className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.password ? 'border-red-500' : 'border-stroke'}`}
+                  placeholder="رمز عبور"
                 />
-                {errors.price && <p className="text-danger text-3 mt-2.5">{errors.price.message}</p>}
+                {errors.password && <p className="text-danger text-3 mt-2.5">{errors.password.message}</p>}
               </div>
-
             </div>
-            <div className="my-4.5 grid md:grid-cols-2 gap-6">
 
-              {/* Expiry Date */}
+            {/* Host Link and Space */}
+            <div className="my-4.5 grid md:grid-cols-2 gap-6">
+              <div className="my-4.5">
+                <label className="block mb-2.5 text-black dark:text-white">لینک هاست</label>
+                <input
+                  type="text"
+                  {...register('link', { required: 'لینک هاست الزامی است.' })}
+                  className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.link ? 'border-red-500' : 'border-stroke'}`}
+                  placeholder="لینک هاست"
+                />
+                {errors.link && <p className="text-danger text-3 mt-2.5">{errors.link.message}</p>}
+              </div>
+
+              <div className="my-4.5">
+                <label className="block mb-2.5 text-black dark:text-white">فضای هاست</label>
+                <input
+                  type="text"
+                  {...register('space', { required: 'فضای هاست الزامی است.' })}
+                  className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.space ? 'border-red-500' : 'border-stroke'}`}
+                  placeholder="فضای هاست"
+                />
+                {errors.space && <p className="text-danger text-3 mt-2.5">{errors.space.message}</p>}
+              </div>
+            </div>
+
+            {/* Dates and Price */}
+            <div className="my-4.5 grid md:grid-cols-2 gap-6">
               <div className="my-4.5">
                 <label className="block mb-2.5 text-black dark:text-white">تاریخ انقضا</label>
                 <DatePicker
@@ -200,7 +232,6 @@ const DomainAdd: React.FC = () => {
                 {errors.expiry_date && <p className="text-danger text-3 mt-2.5">{errors.expiry_date.message}</p>}
               </div>
 
-              {/* Reminder Date */}
               <div className="my-4.5">
                 <label className="block mb-2.5 text-black dark:text-white">تاریخ یادآوری</label>
                 <DatePicker
@@ -215,9 +246,9 @@ const DomainAdd: React.FC = () => {
                 {errors.reminder_date && <p className="text-danger text-3 mt-2.5">{errors.reminder_date.message}</p>}
               </div>
             </div>
-            <div className="my-4.5 grid md:grid-cols-2 gap-6">
 
-              {/* Purchase Type */}
+            {/* Purchase Type and Reminder Status */}
+            <div className="my-4.5 grid md:grid-cols-2 gap-6">
               <div className="my-4.5">
                 <label className="block mb-2.5 text-black dark:text-white">نوع خرید</label>
                 <select
@@ -230,18 +261,40 @@ const DomainAdd: React.FC = () => {
                 {errors.purchase_type && <p className="text-danger text-3 mt-2.5">{errors.purchase_type.message}</p>}
               </div>
 
-              {/* Reminder Status */}
               <div className="my-4.5">
                 <label className="block mb-2.5 text-black dark:text-white">یادآور</label>
                 <select
-                  {...register('reminder', { required: 'وضعیت یادآور الزامی است.' })}
+                  {...register('reminder')}
                   className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.reminder ? 'border-red-500' : 'border-stroke'}`}
                 >
                   <option value="0">فعال</option>
                   <option value="1">غیرفعال</option>
                 </select>
-                {errors.reminder && <p className="text-danger text-3 mt-2.5">{errors.reminder.message}</p>}
               </div>
+            </div>
+
+            {/* Show company_name only if purchase_type is "customer" */}
+            {purchaseType === 'customer' && (
+              <div className="my-4.5">
+                <label className="block mb-2.5 text-black dark:text-white">نام کمپانی</label>
+                <input
+                  type="text"
+                  {...register('company_name')}
+                  className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.company_name ? 'border-red-500' : 'border-stroke'}`}
+                  placeholder="نام کمپانی"
+                />
+              </div>
+            )}
+
+            <div className="my-4.5">
+              <label className="block mb-2.5 text-black dark:text-white">قیمت هاست</label>
+              <input
+                type="text"
+                {...register('price')}
+                className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.price ? 'border-red-500' : 'border-stroke'}`}
+                placeholder="قیمت هاست"
+              />
+              {errors.price && <p className="text-danger text-3 mt-2.5">{errors.price.message}</p>}
             </div>
 
             {/* Associate With: Project or User */}
@@ -286,6 +339,7 @@ const DomainAdd: React.FC = () => {
               </div>
             )}
 
+            {/* Create Invoice Checkbox */}
             <div className="my-4.5">
               <label className="block mb-2.5 text-black dark:text-white">ایجاد فاکتور</label>
               <input
@@ -296,7 +350,7 @@ const DomainAdd: React.FC = () => {
             </div>
 
             <button type="submit" className="mt-4 bg-primary text-white py-2 px-4 rounded">
-              ایجاد دامنه
+              ایجاد هاست
             </button>
           </form>
         </div>
@@ -305,4 +359,4 @@ const DomainAdd: React.FC = () => {
   );
 };
 
-export default DomainAdd;
+export default HostAdd;
