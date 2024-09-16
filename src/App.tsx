@@ -19,9 +19,13 @@ import Settings from './pages/Settings';
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
+
+
 import DomainsList from './pages/Domains/DomainsList';
 import DomainAdd from './pages/Domains/DomainAdd';
 import DomainEdit from './pages/Domains/DomainEdit';
+
+
 import HostsList from './pages/Hosts/HostsList';
 import HostAdd from './pages/Hosts/HostAdd';
 import HostEdit from './pages/Hosts/HostEdit';
@@ -29,10 +33,18 @@ import HostEdit from './pages/Hosts/HostEdit';
 import SupportsList from './pages/Supports/SupportsList';
 import SupportAdd from './pages/Supports/SupportAdd';
 import SupportEdit from './pages/Supports/SupportEdit';
-// import InvoicesList from './pages/Invoices/InvoicesList';
-// import InvoiceAdd from './pages/Invoices/InvoiceAdd';
-// import UsersList from './pages/Users/UsersList';
-// import UserAdd from './pages/Users/UserAdd';
+
+
+import InvoicesList from './pages/Invoices/InvoicesList';
+import InvoiceAdd from './pages/Invoices/InvoiceAdd';
+import InvoiceEdit from './pages/Invoices/InvoiceEdit';
+
+
+import UsersList from './pages/Users/UsersList';
+import UserAdd from './pages/Users/UserAdd';
+import UserEdit from './pages/Users/UserEdit';
+
+
 // import SmsesList from './pages/Smses/SmsesList';
 // import SmsAdd from './pages/Smses/SmsAdd';
 // import LogViewer from './pages/LogViewer';
@@ -177,11 +189,16 @@ function App() {
         <Route path="/supports/add" element={<SupportAdd />} />
         <Route path="/supports/edit/:id" element={<SupportEdit />} />
 
-          {/*<Route path="/invoices/list" element={<InvoicesList />} />
+         <Route path="/invoices/list" element={<InvoicesList />} />
         <Route path="/invoices/add" element={<InvoiceAdd />} />
-        <Route path="/users/list" element={<UsersList />} />
+        <Route path="/invoices/edit/:id" element={<InvoiceEdit />} />
+
+         <Route path="/users/list" element={<UsersList />} />
         <Route path="/users/add" element={<UserAdd />} />
-        <Route path="/smses/list" element={<SmsesList />} />
+        <Route path="/users/edit/:id" element={<UserEdit />} />
+
+
+       {/* <Route path="/smses/list" element={<SmsesList />} />
         <Route path="/smses/add" element={<SmsAdd />} />
         <Route path="/log-viewer" element={<LogViewer />} /> */}
       </Routes>
