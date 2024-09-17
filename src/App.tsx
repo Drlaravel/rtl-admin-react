@@ -45,9 +45,14 @@ import UserAdd from './pages/Users/UserAdd';
 import UserEdit from './pages/Users/UserEdit';
 
 
-// import SmsesList from './pages/Smses/SmsesList';
-// import SmsAdd from './pages/Smses/SmsAdd';
-// import LogViewer from './pages/LogViewer';
+import SmsesList from './pages/Smses/SmsesList';
+import SmsAdd from './pages/Smses/SmsAdd';
+import SmsSetting from './pages/Smses/SmsSetting';
+
+
+
+
+import LogPage from './pages/LogPage';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -178,7 +183,7 @@ function App() {
         <Route path="/projects/list" element={<ProjectsList />} />
         <Route path="/projects/add" element={<ProjectAdd />} />
         <Route path="/projects/edit/:projectId" element={<ProjectEdit />} />
-       <Route path="/domains/list" element={<DomainsList />} />
+        <Route path="/domains/list" element={<DomainsList />} />
         <Route path="/domains/add" element={<DomainAdd />} />
         <Route path="/domains/edit/:id" element={<DomainEdit />} />
         <Route path="/hosts/list" element={<HostsList />} />
@@ -189,18 +194,19 @@ function App() {
         <Route path="/supports/add" element={<SupportAdd />} />
         <Route path="/supports/edit/:id" element={<SupportEdit />} />
 
-         <Route path="/invoices/list" element={<InvoicesList />} />
+        <Route path="/invoices/list" element={<InvoicesList />} />
         <Route path="/invoices/add" element={<InvoiceAdd />} />
         <Route path="/invoices/edit/:id" element={<InvoiceEdit />} />
 
-         <Route path="/users/list" element={<UsersList />} />
+        <Route path="/users/list" element={<UsersList />} />
         <Route path="/users/add" element={<UserAdd />} />
         <Route path="/users/edit/:id" element={<UserEdit />} />
 
 
-       {/* <Route path="/smses/list" element={<SmsesList />} />
-        <Route path="/smses/add" element={<SmsAdd />} />
-        <Route path="/log-viewer" element={<LogViewer />} /> */}
+        <Route path="/sms/logs" element={<SmsesList />} />
+        <Route path="/sms/add" element={<SmsAdd />} />
+        <Route path="/sms/setting" element={<SmsSetting />} />
+        <Route path="/log-viewer" element={<LogPage />} />
       </Routes>
     </DefaultLayout>
   );
