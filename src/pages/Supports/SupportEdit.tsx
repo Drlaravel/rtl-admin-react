@@ -96,16 +96,16 @@ const SupportEdit: React.FC = () => {
     const fetchAllData = async () => {
       try {
         const [usersResponse, projectsResponse] = await Promise.all([
-          api.get('/api/users'),
-          api.get('/api/projects'),
+          api.get('/api/all-users'),
+          api.get('/api/all-projects'),
         ]);
 
-        const usersData = usersResponse.data.data.map((user: any) => ({
+        const usersData = usersResponse.data.map((user: any) => ({
           value: user.id,
           label: user.name,
         }));
 
-        const projectsData = projectsResponse.data.data.map((project: any) => ({
+        const projectsData = projectsResponse.data.map((project: any) => ({
           value: project.id,
           label: project.name,
         }));

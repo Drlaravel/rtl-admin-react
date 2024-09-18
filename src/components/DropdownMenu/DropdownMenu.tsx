@@ -1,7 +1,7 @@
-// DropdownMenu.jsx
+// src/components/DropdownMenu/DropdownMenu.jsx
 import React, { useState } from 'react';
 
-const DropdownMenu = ({handleDelete, handleDetails }) => {
+const DropdownMenu = ({ actions }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -32,19 +32,15 @@ const DropdownMenu = ({handleDelete, handleDetails }) => {
 
       {isOpen && (
         <div className="max-w-39.5 shadow-12 absolute right-0 z-1 w-full rounded-[5px] bg-white py-2.5 dark:bg-boxdark top-full mt-1">
-          
-          <button
-            className="flex w-full px-4 py-2 text-sm hover:bg-whiter hover:text-primary dark:hover:bg-meta-4"
-            onClick={handleDetails}
-          >
-            جزئیات
-          </button>
-          <button
-            className="flex w-full items-center px-4 py-2 text-sm text-red-500 hover:bg-gray-100 dark:text-red-400  dark:hover:bg-meta-4"
-            onClick={handleDelete}
-          >
-            حذف
-          </button>
+          {actions.map((action, index) => (
+            <button
+              key={index}
+              className={`flex w-full px-4 py-2 text-sm ${action.className} hover:bg-whiter hover:text-primary dark:hover:bg-meta-4`}
+              onClick={action.onClick}
+            >
+              {action.label}
+            </button>
+          ))}
         </div>
       )}
     </div>

@@ -97,13 +97,13 @@ const InvoiceAdd: React.FC = () => {
         const fetchAllData = async () => {
             try {
                 const [projectsResponse, hostsResponse, domainsResponse, supportsResponse] = await Promise.all([
-                    api.get('/api/projects'),
+                    api.get('/api/all-projects'),
                     api.get('/api/hosts'),
                     api.get('/api/domains'),
                     api.get('/api/supports'),
                 ]);
 
-                setProjects(projectsResponse.data.data.map((project: any) => ({ value: project.id, label: project.name })));
+                setProjects(projectsResponse.data.map((project: any) => ({ value: project.id, label: project.name })));
                 setHosts(hostsResponse.data.data.map((host: any) => ({ value: host.id, label: host.username })));
                 setDomains(domainsResponse.data.data.map((domain: any) => ({ value: domain.id, label: domain.name })));
                 setSupports(supportsResponse.data.data.map((support: any) => ({ value: support.id, label: support.name })));

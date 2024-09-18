@@ -1,3 +1,5 @@
+// src/pages/PaymentList.tsx
+
 import React, { useEffect, useState, useCallback } from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -54,12 +56,8 @@ const PaymentList: React.FC = () => {
     async (page = 1) => {
       try {
         const response = await api.get(`/api/payments?page=${page}`);
-        console.log(response.data.data.data); 
-        console.log(response.data.data.current_page); 
-       
-          setPayments(response.data.data.data);
-          setPageCount(response.data.data.current_page); // تنظیم تعداد صفحات صحیح
-        
+        setPayments(response.data.data.data);
+        setPageCount(response.data.data.last_page); // تنظیم تعداد صفحات صحیح
       } catch (error) {
         console.error('Error fetching payments:', error);
         showAlert('خطا!', 'دریافت پرداخت‌ها با مشکل مواجه شد.', 'error');
@@ -110,6 +108,11 @@ const PaymentList: React.FC = () => {
     navigate(`/invoices/edit/${paymentId}`);
   };
 
+  const handleViewInvoice = (paymentId: number) => {
+    console.log('Viewing invoice for payment ID:', paymentId);
+    navigate(`/invoices/view/${paymentId}`);
+  };
+
   if (loading) {
     return <p>در حال بارگذاری...</p>;
   }
@@ -153,7 +156,13 @@ const PaymentList: React.FC = () => {
           due_date:  payment.due_date || 'نامشخص',
         }))}
         renderActions={(payment) => (
-          <DropdownMenu handleDelete={() => handleDelete(payment.id)} handleDetails={() => handleDetails(payment.id)} />
+          <DropdownMenu
+            actions={[
+              { label: 'جزئیات', onClick: () => handleDetails(payment.id), className: '' },
+              { label: 'فاکتور', onClick: () => handleViewInvoice(payment.id), className: '' },
+              { label: 'حذف', onClick: () => handleDelete(payment.id), className: 'text-red-500' },
+            ]}
+          />
         )}
       />
 
