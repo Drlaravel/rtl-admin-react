@@ -115,9 +115,10 @@ const ProjectList: React.FC = () => {
       </div>
 
       <TableComponent<Project>
-        headers={['نام پروژه', 'نام کارفرما', 'شماره تماس', 'زمان اتمام پروژه', 'وضعیت پروژه', 'هزینه ی کل پروژه', 'هزینه ی پرداخت شده',]}
+        headers={['ایدی','نام پروژه', 'نام کارفرما', 'شماره تماس', 'زمان اتمام پروژه', 'وضعیت پروژه', 'هزینه ی کل پروژه', 'هزینه ی پرداخت شده',]}
         data={projects.map(project => ({
-          name: project.name,
+            id: project.id ,
+            name: project.name,
           employer: project.employer,
           contact_number: project.contact_number,
           end_date: project.end_date,
@@ -126,9 +127,11 @@ const ProjectList: React.FC = () => {
           total_paid: `${new Intl.NumberFormat().format(project.total_paid)} تومان`,
         }))}
         renderActions={(project) => (
-          <DropdownMenu
-            handleDelete={() => handleDelete(project.id)}
-            handleDetails={() => handleDetails(project.id)}
+            <DropdownMenu
+            actions={[
+              { label: 'حذف', onClick: () => handleDelete(project.id), className: 'text-red-500' },
+              { label: 'ویرایش', onClick: () => handleDetails(project.id), className: 'text-blue-500' }
+            ]}
           />
         )}
       />
@@ -146,7 +149,7 @@ const ProjectList: React.FC = () => {
 const getStatusLabel = (status: string): string => {
   switch (status) {
     case 'completed':
-      return 'پرداخت شده';
+      return 'تمام شده';
     case 'demo':
       return 'دمو';
     case 'prepayment':

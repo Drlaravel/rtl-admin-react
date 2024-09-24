@@ -72,7 +72,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         </button>
       </header>
 
-      <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
+      <nav className="overflow-x-auto  mt-5 py-4 px-4 lg:mt-9 lg:px-6">
         <ul>
           <li>
             <NavLink
@@ -121,7 +121,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </li>
 
 
-                    
+
                   </ul>
                 </div>
               </>
@@ -307,6 +307,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             )}
           </SidebarLinkGroup>
 
+
+
+
           <SidebarLinkGroup activeCondition={pathname.startsWith('/users')}>
             {(handleClick, open) => (
               <>
@@ -392,7 +395,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
                       >
-                        تنظیمات پیام ها 
+                        تنظیمات پیام ها
                       </NavLink>
                     </li>
                   </ul>
@@ -400,6 +403,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </>
             )}
           </SidebarLinkGroup>
+          <li>
+            <NavLink
+              to="/notification"
+              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 mt-3 ${pathname.startsWith('/smses') ? 'bg-graydark dark:bg-meta-4' : ''}`}
+            >
+              اعلان ها
+            </NavLink>
+          </li>
+
           <li>
             <NavLink
               to="/log-viewer"

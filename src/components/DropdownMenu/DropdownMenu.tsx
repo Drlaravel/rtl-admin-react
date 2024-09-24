@@ -1,7 +1,6 @@
-// src/components/DropdownMenu/DropdownMenu.jsx
 import React, { useState } from 'react';
 
-const DropdownMenu = ({ actions }) => {
+const DropdownMenu = ({ actions = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
