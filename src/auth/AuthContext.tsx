@@ -1,10 +1,11 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
+
 interface AuthContextType {
   authToken: string | null;
-  userRole: string | null;
-  login: (token: string, role: string) => void;
+  user: { name: string; role: string } | null;
+  login: (token: string, role: string, name: string) => void;
   logout: () => void;
 }
 
@@ -16,7 +17,11 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authToken, setAuthToken] = useState<string | null>(localStorage.getItem('authToken'));
-  const [userRole, setUserRole] = useState<string | null>(localStorage.getItem('userRole'));
+  const [user, setUser] = useState<{ name: string; role: string } | null>(
+    localStorage.getItem('user')
+      ? JSON.parse(localStorage.getItem('user') || '{}')
+      : null
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,35 +30,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const decodedToken: any = jwtDecode(authToken);
 
         if (decodedToken.exp * 1000 < Date.now()) {
-          logout();  // اگر توکن منقضی شده باشد
+          logout();
         }
       } catch (error) {
         console.error('Invalid token', error);
-        logout();  // اگر توکن نامعتبر است
+        logout();
       }
     }
   }, [authToken]);
 
-  const login = (token: string, role: string) => {
+  const login = (token: string, role: string, name: string) => {
     localStorage.setItem('authToken', token);
-    localStorage.setItem('userRole', role);
+    localStorage.setItem('user', JSON.stringify({ name, role }));
 
     setAuthToken(token);
-    setUserRole(role);  // تنظیم نقش کاربر
+    setUser({ name, role });
 
-    navigate('/');  // هدایت به صفحه اصلی
+    navigate('/');
   };
+
+
 
   const logout = () => {
     localStorage.removeItem('authToken');
-    localStorage.removeItem('userRole');
+    localStorage.removeItem('user');
     setAuthToken(null);
-    setUserRole(null);
-    navigate('/auth/signin');  // هدایت به صفحه ورود
+    setUser(null);
+    navigate('/auth/signin');
   };
 
   return (
-    <AuthContext.Provider value={{ authToken, userRole, login, logout }}>
+    <AuthContext.Provider value={{ authToken, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

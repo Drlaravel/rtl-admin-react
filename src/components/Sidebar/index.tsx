@@ -57,7 +57,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0  ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
     >
       <header className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
-        <NavLink to="/">
+        <NavLink to="/admin/">
           <img src={Logo} alt="Logo" />
         </NavLink>
 
@@ -76,7 +76,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         <ul>
           <li>
             <NavLink
-              to="/"
+              to="/admin/"
               className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 mb-3 ${pathname.startsWith('/smses') ? 'bg-graydark dark:bg-meta-4' : ''}`}
             >
               صفحه ی اصلی
@@ -101,7 +101,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                     <li>
                       <NavLink
-                        to="/projects/list"
+                        to="/admin/projects/list"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -111,7 +111,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </li>
                     <li>
                       <NavLink
-                        to="/projects/add"
+                        to="/admin/projects/add"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -146,7 +146,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                     <li>
                       <NavLink
-                        to="/domains/list"
+                        to="/admin/domains/list"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -156,7 +156,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </li>
                     <li>
                       <NavLink
-                        to="/domains/add"
+                        to="/admin/domains/add"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -188,7 +188,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                     <li>
                       <NavLink
-                        to="/hosts/list"
+                        to="/admin/hosts/list"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -198,7 +198,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </li>
                     <li>
                       <NavLink
-                        to="/hosts/add"
+                        to="/admin/hosts/add"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -230,7 +230,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                     <li>
                       <NavLink
-                        to="/supports/list"
+                        to="/admin/supports/list"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -240,7 +240,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </li>
                     <li>
                       <NavLink
-                        to="/supports/add"
+                        to="/admin/supports/add"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -272,7 +272,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                     <li>
                       <NavLink
-                        to="/invoices/list"
+                        to="/admin/invoices/list"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -282,7 +282,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </li>
                     <li>
                       <NavLink
-                        to="/invoices/add"
+                        to="/admin/invoices/add"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -293,7 +293,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
                     <li>
                       <NavLink
-                        to="/invoices/logs"
+                        to="/admin/invoices/logs"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -328,7 +328,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                     <li>
                       <NavLink
-                        to="/users/list"
+                        to="/admin/users/list"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -338,7 +338,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </li>
                     <li>
                       <NavLink
-                        to="/users/add"
+                        to="/admin/users/add"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -370,7 +370,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                     <li>
                       <NavLink
-                        to="/sms/logs"
+                        to="/admin/sms/logs"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -380,7 +380,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </li>
                     <li>
                       <NavLink
-                        to="/sms/add"
+                        to="/admin/sms/add"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -390,7 +390,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </li>
                     <li>
                       <NavLink
-                        to="/sms/setting"
+                        to="/admin/sms/setting"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
@@ -405,7 +405,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           </SidebarLinkGroup>
           <li>
             <NavLink
-              to="/notification"
+              to="/admin/notification"
               className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 mt-3 ${pathname.startsWith('/smses') ? 'bg-graydark dark:bg-meta-4' : ''}`}
             >
               اعلان ها
@@ -414,7 +414,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
           <li>
             <NavLink
-              to="/log-viewer"
+              to="/admin/log-viewer"
               className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 mt-3 ${pathname.startsWith('/smses') ? 'bg-graydark dark:bg-meta-4' : ''}`}
             >
               لاگ ها

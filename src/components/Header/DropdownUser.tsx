@@ -11,6 +11,8 @@ const DropdownUser = () => {
 
   // دریافت user از authContext
   const user = authContext?.user || { name: 'User', role: 'user' };
+console.log(authContext);
+console.log(user);
 
   const logout = authContext?.logout;
 
@@ -28,9 +30,7 @@ const DropdownUser = () => {
           <UserRoleDisplay user={user} />
         </span>
 
-        <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
-        </span>
+
 
         <svg
           className="hidden fill-current sm:block"

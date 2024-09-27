@@ -9,21 +9,15 @@ import NotFoundPage from './pages/NotFoundPage';
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import DefaultLayout from './layout/DefaultLayout';
+import UserLayout from './layout/UserLayout';
 import SignIn from './pages/Authentication/SignIn';
-import SignUp from './pages/Authentication/SignUp';
-import Calendar from './pages/Calendar';
-import Chart from './pages/Chart';
+
 import ECommerce from './pages/Dashboard/ECommerce';
-import FormElements from './pages/Form/FormElements';
-import FormLayout from './pages/Form/FormLayout';
+
 import Profile from './pages/Profile';
 import ProjectAdd from './pages/Projects/ProjectAdd';
 import ProjectsList from './pages/Projects/ProjectsList';
 import ProjectEdit from './pages/Projects/ProjectEdit';
-import Settings from './pages/Settings';
-import Tables from './pages/Tables';
-import Alerts from './pages/UiElements/Alerts';
-import Buttons from './pages/UiElements/Buttons';
 
 import DomainsList from './pages/Domains/DomainsList';
 import DomainAdd from './pages/Domains/DomainAdd';
@@ -57,6 +51,22 @@ import SmsSetting from './pages/Smses/SmsSetting';
 import PrivateRoute from './api/PrivateRoute';
 import LogPage from './pages/LogPage';
 
+
+
+
+
+/////////////////
+
+import Dashboard from './pages/UserDashborad';
+import UserDomainList from './pages/UserDashborad/UserDomainList';
+import UserHostsList from './pages/UserDashborad/UserHostsList';
+import UserSupportsList from './pages/UserDashborad/UserSupportsList';
+import UserInvoiceList from './pages/UserDashborad/UserInvoiceList';
+import UserProjectsList from './pages/UserDashborad/UserProjectsList';
+
+
+
+
 function App() {
     const [loading, setLoading] = useState<boolean>(true);
     const { pathname } = useLocation();
@@ -81,44 +91,60 @@ function App() {
                     path="/auth/signin"
                     element={
                         <>
-                            <PageTitle title="Signin | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                            <PageTitle title="ورود به crm اختصاصی تهران سایت" />
                             <SignIn />
                         </>
                     }
                 />
-                <Route
-                    path="/auth/signup"
-                    element={
-                        <>
-                            <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                            <SignUp />
-                        </>
-                    }
-                />
 
-                <Route
-                    path="*"
-                    element={
-                        <>
-                            <PageTitle title="۴۰۴ صفحه یافت نشد" />
-                            <NotFoundPage />
-                        </>
-                    }
-                />
 
 
                 <Route element={<PrivateRoute />}>
-                    <Route path="user" element={<DefaultLayout />}>
-                    <Route
+                    <Route path="user" element={<UserLayout />}>
+                        <Route
                             index
                             element={
                                 <>
                                     <PageTitle title="پنل کاربران تهران سایت" />
-                                    <ECommerce />
+                                    <Dashboard />
                                 </>
                             }
                         />
+
+                        <Route
+                            path="domains/list"
+                            element={<UserDomainList />
+                            }
+                        />
+
+                        <Route
+                            path="hosts/list"
+                            element={<UserHostsList />
+                            }
+                        />
+
+
+                        <Route
+                            path="supports/list"
+                            element={<UserSupportsList />
+                            }
+                        />
+
+                        <Route
+                            path="invoices/list"
+                            element={<UserInvoiceList />
+                            }
+                        />
+                        <Route path="projects/list" element={<UserProjectsList />} />
+
                     </Route>
+
+
+
+
+
+
+
                 </Route>
 
 
@@ -131,20 +157,12 @@ function App() {
                             index
                             element={
                                 <>
-                                    <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                                    <PageTitle title="صفحه ی اصلی " />
                                     <ECommerce />
                                 </>
                             }
                         />
-                        <Route
-                            path="calendar"
-                            element={
-                                <>
-                                    <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                                    <Calendar />
-                                </>
-                            }
-                        />
+
                         <Route
                             path="profile"
                             element={
@@ -154,71 +172,8 @@ function App() {
                                 </>
                             }
                         />
-                        <Route
-                            path="forms/form-elements"
-                            element={
-                                <>
-                                    <PageTitle title="Form Elements | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                                    <FormElements />
-                                </>
-                            }
-                        />
-                        <Route
-                            path="forms/form-layout"
-                            element={
-                                <>
-                                    <PageTitle title="Form Layout | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                                    <FormLayout />
-                                </>
-                            }
-                        />
-                        <Route
-                            path="tables"
-                            element={
-                                <>
-                                    <PageTitle title="Tables | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                                    <Tables />
-                                </>
-                            }
-                        />
-                        <Route
-                            path="settings"
-                            element={
-                                <>
-                                    <PageTitle title="Settings | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                                    <Settings />
-                                </>
-                            }
-                        />
-                        <Route
-                            path="chart"
-                            element={
-                                <>
-                                    <PageTitle title="Basic Chart | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                                    <Chart />
-                                </>
-                            }
-                        />
-                        <Route
-                            path="ui/alerts"
-                            element={
-                                <>
-                                    <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                                    <Alerts />
-                                </>
-                            }
-                        />
-                        <Route
-                            path="ui/buttons"
-                            element={
-                                <>
-                                    <PageTitle title="Buttons | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                                    <Buttons />
-                                </>
-                            }
-                        />
 
-                        {/* سایر مسیرهای محافظت‌شده */}
+
                         <Route path="projects/list" element={<ProjectsList />} />
                         <Route path="projects/add" element={<ProjectAdd />} />
                         <Route path="projects/edit/:projectId" element={<ProjectEdit />} />
@@ -256,7 +211,7 @@ function App() {
                     </Route>
                 </Route>
             </Routes>
-        </AuthProvider>
+        </AuthProvider >
     );
 }
 

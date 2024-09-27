@@ -16,14 +16,11 @@ const ECommerce: React.FC = () => {
     useEffect(() => {
       // دریافت اطلاعات آماری
       api.get('/api/ecommerce/stats').then((response) => {
-        console.log(response.data)
+        
         setStats(response.data);
       });
 
-      // دریافت اطلاعات چارت‌ها
-      api.get('/api/ecommerce/chart-data').then((response) => {
-        setChartData(response.data);
-      });
+
 
       // دریافت اطلاعات جدول
       api.get('/api/ecommerce/table-data').then((response) => {

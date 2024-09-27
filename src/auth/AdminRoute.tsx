@@ -5,12 +5,12 @@ import { AuthContext } from '../auth/AuthContext';
 const AdminRoute: React.FC = () => {
   const authContext = useContext(AuthContext);
 
-  if (!authContext || !authContext.authToken || !authContext.userRole) {
+  if (!authContext || !authContext.authToken || !authContext.user) {
     return <Navigate to="/auth/signin" />;
   }
 
   // بررسی نقش کاربر
-  return authContext.userRole === 'admin' ? (
+  return authContext.user.role === 'admin' ? (
     <Outlet />
   ) : (
     <Navigate to="/auth/signin" />

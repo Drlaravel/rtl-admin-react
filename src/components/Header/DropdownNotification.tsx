@@ -60,7 +60,7 @@ const DropdownNotification = () => {
 
                 {dropdownOpen && (
                     <div
-                        className="absolute -right-27 mt-2.5 flex h-90 w-75 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80"
+                        className="absolute -right-45 mt-2.5 flex h-90 w-75 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark  sm:w-80"
                     >
                         <div className="px-4.5 py-3">
                             <h5 className="text-sm font-medium text-bodydark2">اعلان ها</h5>

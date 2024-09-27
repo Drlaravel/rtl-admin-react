@@ -1,15 +1,15 @@
-// src/api.js
-import axios from 'axios';
-import API_BASE_URL from './apiConfig'; // فایل apiConfig.js را ایمپورت کنید
 
-// ایجاد نمونه‌ای از axios با تنظیمات پایه
+import axios from 'axios';
+import API_BASE_URL from './apiConfig';
+
 const api = axios.create({
     baseURL: API_BASE_URL,
-    withCredentials: true, // انتقال withCredentials به سطح بالا
+    withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
     },
 });
+
 
 api.interceptors.request.use(
     (config) => {
@@ -20,6 +20,19 @@ api.interceptors.request.use(
       return config;
     },
     (error) => Promise.reject(error)
-  );
+);
+
+// افزودن اینترسپتور برای پاسخ‌ها جهت مدیریت خطاها
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+
+            console.error('Unauthorized - Please log in again');
+
+        }
+        return Promise.reject(error);
+    }
+);
 
 export default api;

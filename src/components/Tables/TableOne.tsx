@@ -19,10 +19,10 @@ const TableOne: React.FC = () => {
   const fetchPayments = useCallback(async () => {
     try {
       const response = await api.get('/api/payments');
-      console.log(response.data.data.data)
+
       setPayments(response.data.data.data); // فرض می‌کنیم که داده‌ها در فیلد `data` هستند
     } catch (error) {
-      console.error('Error fetching payments:', error);
+     
     } finally {
       setLoading(false);
     }

@@ -47,21 +47,21 @@ const SignIn: React.FC = () => {
         email,
         password,
       });
-
+      console.log(response)
       const token = response.data.token;
       const user = response.data.user;
-      const userRole = user.roles && user.roles.length > 0 ? user.roles[0].name : 'user'; // دریافت نقش کاربر
+      const userRole = user.roles.length > 0 ? user.roles[0].name : 'user'; // بررسی نقش کاربر
 
-      // ذخیره توکن و نقش کاربر
-      authContext?.login(token, userRole);
+      // اصلاح ترتیب پارامترها در اینجا
+      authContext?.login(token, userRole, user.name); // ذخیره نقش کاربر و نام کاربر به ترتیب صحیح
 
-      // هدایت به مسیر مناسب بر اساس نقش
       if (userRole === 'admin') {
         navigate('/admin');
       } else {
         navigate('/user');
       }
     } catch (error: any) {
+      console.log(error)
       setErrors((prevErrors) => ({
         ...prevErrors,
         general: error.response?.data?.message || 'خطایی رخ داده است.',
@@ -70,6 +70,8 @@ const SignIn: React.FC = () => {
       setLoading(false);
     }
   };
+
+
 
 
 
