@@ -1,121 +1,95 @@
-import { BRAND } from '../../types/brand';
-import BrandOne from '../../images/brand/brand-01.svg';
-import BrandTwo from '../../images/brand/brand-02.svg';
-import BrandThree from '../../images/brand/brand-03.svg';
-import BrandFour from '../../images/brand/brand-04.svg';
-import BrandFive from '../../images/brand/brand-05.svg';
+import React, { useEffect, useState, useCallback } from 'react';
+import api from '../../api/api'; // اتصال به API
 
-const brandData: BRAND[] = [
-  {
-    logo: BrandOne,
-    name: 'Google',
-    visitors: 3.5,
-    revenues: '5,768',
-    sales: 590,
-    conversion: 4.8,
-  },
-  {
-    logo: BrandTwo,
-    name: 'Twitter',
-    visitors: 2.2,
-    revenues: '4,635',
-    sales: 467,
-    conversion: 4.3,
-  },
-  {
-    logo: BrandThree,
-    name: 'Github',
-    visitors: 2.1,
-    revenues: '4,290',
-    sales: 420,
-    conversion: 3.7,
-  },
-  {
-    logo: BrandFour,
-    name: 'Vimeo',
-    visitors: 1.5,
-    revenues: '3,580',
-    sales: 389,
-    conversion: 2.5,
-  },
-  {
-    logo: BrandFive,
-    name: 'Facebook',
-    visitors: 3.5,
-    revenues: '6,768',
-    sales: 390,
-    conversion: 4.2,
-  },
-];
+interface Payment {
+  id: number;
+  title: string;
+  amount: string;
+  status: 'paid' | 'pending' | 'rejected';
+  payment_type: 'cash' | 'check' | 'installment';
+  due_date: string | null;
+  created_at: string;
+}
 
-const TableOne = () => {
+const TableOne: React.FC = () => {
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // درخواست به API برای دریافت فاکتورها
+  const fetchPayments = useCallback(async () => {
+    try {
+      const response = await api.get('/api/payments');
+      console.log(response.data.data.data)
+      setPayments(response.data.data.data); // فرض می‌کنیم که داده‌ها در فیلد `data` هستند
+    } catch (error) {
+      console.error('Error fetching payments:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPayments();
+  }, [fetchPayments]);
+
+  if (loading) {
+    return <p>در حال بارگذاری...</p>;
+  }
+
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-        Top Channels
+        لیست فاکتورها
       </h4>
 
       <div className="flex flex-col">
         <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-5">
           <div className="p-2.5 xl:p-5">
-            <h5 className="text-sm font-medium uppercase xsm:text-base">
-              Source
-            </h5>
+            <h5 className="text-sm font-medium uppercase xsm:text-base">عنوان</h5>
           </div>
           <div className="p-2.5 text-center xl:p-5">
-            <h5 className="text-sm font-medium uppercase xsm:text-base">
-              Visitors
-            </h5>
+            <h5 className="text-sm font-medium uppercase xsm:text-base">مبلغ</h5>
           </div>
           <div className="p-2.5 text-center xl:p-5">
-            <h5 className="text-sm font-medium uppercase xsm:text-base">
-              Revenues
-            </h5>
+            <h5 className="text-sm font-medium uppercase xsm:text-base">وضعیت</h5>
           </div>
           <div className="hidden p-2.5 text-center sm:block xl:p-5">
-            <h5 className="text-sm font-medium uppercase xsm:text-base">
-              Sales
-            </h5>
+            <h5 className="text-sm font-medium uppercase xsm:text-base">نوع پرداخت</h5>
           </div>
           <div className="hidden p-2.5 text-center sm:block xl:p-5">
-            <h5 className="text-sm font-medium uppercase xsm:text-base">
-              Conversion
-            </h5>
+            <h5 className="text-sm font-medium uppercase xsm:text-base">تاریخ سررسید</h5>
           </div>
         </div>
 
-        {brandData.map((brand, key) => (
+        {payments.map((payment) => (
           <div
-            className={`grid grid-cols-3 sm:grid-cols-5 ${
-              key === brandData.length - 1
-                ? ''
-                : 'border-b border-stroke dark:border-strokedark'
-            }`}
-            key={key}
+            className={`grid grid-cols-3 sm:grid-cols-5 border-b border-stroke dark:border-strokedark`}
+            key={payment.id}
           >
             <div className="flex items-center gap-3 p-2.5 xl:p-5">
-              <div className="flex-shrink-0">
-                <img src={brand.logo} alt="Brand" />
-              </div>
-              <p className="hidden text-black dark:text-white sm:block">
-                {brand.name}
+              <p className="text-black dark:text-white">{payment.title}</p>
+            </div>
+
+            <div className="flex items-center justify-center p-2.5 xl:p-5">
+              <p className="text-black dark:text-white">
+                {new Intl.NumberFormat().format(Number(payment.amount))} تومان
               </p>
             </div>
 
             <div className="flex items-center justify-center p-2.5 xl:p-5">
-              <p className="text-black dark:text-white">{brand.visitors}K</p>
-            </div>
-
-            <div className="flex items-center justify-center p-2.5 xl:p-5">
-              <p className="text-meta-3">${brand.revenues}</p>
-            </div>
-
-            <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-              <p className="text-black dark:text-white">{brand.sales}</p>
+              <p className={`text-${payment.status === 'paid' ? 'green' : payment.status === 'pending' ? 'yellow' : 'red'}`}>
+                {payment.status === 'paid' ? 'پرداخت شده' : payment.status === 'pending' ? 'در انتظار' : 'رد شده'}
+              </p>
             </div>
 
             <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-              <p className="text-meta-5">{brand.conversion}%</p>
+              <p className="text-black dark:text-white">
+                {payment.payment_type === 'cash' ? 'نقدی' : payment.payment_type === 'check' ? 'چک' : 'قسطی'}
+              </p>
+            </div>
+
+            <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+              <p className="text-black dark:text-white">{payment.due_date || 'نامشخص'}</p>
             </div>
           </div>
         ))}

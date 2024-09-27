@@ -13,11 +13,7 @@ const PrivateRoute: React.FC = () => {
         const fetchUser = async () => {
             if (authContext?.authToken) {
                 try {
-                    const response = await api.get('/api/me', {
-                        headers: {
-                            Authorization: `Bearer ${authContext.authToken}`,
-                        },
-                    });
+                    const response = await api.get('/api/me');
                     setUser(response.data);
                 } catch (error) {
                     console.error('Error fetching user data:', error);

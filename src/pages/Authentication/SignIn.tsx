@@ -5,7 +5,7 @@ import { AuthContext } from '../../auth/AuthContext';
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
-  const authContext = useContext(AuthContext); // دسترسی به AuthContext
+  const authContext = useContext(AuthContext);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
@@ -49,9 +49,18 @@ const SignIn: React.FC = () => {
       });
 
       const token = response.data.token;
-      authContext?.login(token);
+      const user = response.data.user;
+      const userRole = user.roles && user.roles.length > 0 ? user.roles[0].name : 'user'; // دریافت نقش کاربر
 
-      navigate('/');
+      // ذخیره توکن و نقش کاربر
+      authContext?.login(token, userRole);
+
+      // هدایت به مسیر مناسب بر اساس نقش
+      if (userRole === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/user');
+      }
     } catch (error: any) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -61,6 +70,8 @@ const SignIn: React.FC = () => {
       setLoading(false);
     }
   };
+
+
 
 
   return (

@@ -48,10 +48,6 @@ const options: ApexOptions = {
     width: [2, 2],
     curve: 'straight',
   },
-  // labels: {
-  //   show: false,
-  //   position: "top",
-  // },
   grid: {
     xaxis: {
       lines: {
@@ -75,7 +71,6 @@ const options: ApexOptions = {
     strokeOpacity: 0.9,
     strokeDashArray: 0,
     fillOpacity: 1,
-    discrete: [],
     hover: {
       size: undefined,
       sizeOffset: 5,
@@ -83,20 +78,7 @@ const options: ApexOptions = {
   },
   xaxis: {
     type: 'category',
-    categories: [
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-    ],
+    categories: ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
     axisBorder: {
       show: false,
     },
@@ -129,7 +111,6 @@ const ChartOne: React.FC = () => {
         name: 'Product One',
         data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
       },
-
       {
         name: 'Product Two',
         data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
@@ -137,12 +118,52 @@ const ChartOne: React.FC = () => {
     ],
   });
 
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
-    }));
+  const updateSeries = (period: string) => {
+    let newSeries;
+
+    switch (period) {
+      case 'day':
+        newSeries = [
+          {
+            name: 'Product One',
+            data: [5, 10, 15, 20, 25, 30, 35, 40],
+          },
+          {
+            name: 'Product Two',
+            data: [10, 20, 30, 40, 50, 60, 70, 80],
+          },
+        ];
+        break;
+      case 'week':
+        newSeries = [
+          {
+            name: 'Product One',
+            data: [20, 25, 30, 35, 40, 45, 50, 55],
+          },
+          {
+            name: 'Product Two',
+            data: [30, 35, 40, 45, 50, 55, 60, 65],
+          },
+        ];
+        break;
+      case 'month':
+        newSeries = [
+          {
+            name: 'Product One',
+            data: [10, 15, 20, 25, 30, 35, 40, 45],
+          },
+          {
+            name: 'Product Two',
+            data: [20, 25, 30, 35, 40, 45, 50, 55],
+          },
+        ];
+        break;
+      default:
+        newSeries = state.series;
+    }
+
+    setState({ series: newSeries });
   };
-  handleReset;
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
@@ -169,13 +190,22 @@ const ChartOne: React.FC = () => {
         </div>
         <div className="flex w-full max-w-45 justify-end">
           <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
-            <button className="rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
+            <button
+              onClick={() => updateSeries('day')}
+              className="rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark"
+            >
               Day
             </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
+            <button
+              onClick={() => updateSeries('week')}
+              className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark"
+            >
               Week
             </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
+            <button
+              onClick={() => updateSeries('month')}
+              className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark"
+            >
               Month
             </button>
           </div>
@@ -184,12 +214,7 @@ const ChartOne: React.FC = () => {
 
       <div>
         <div id="chartOne" className="-ml-5">
-          <ReactApexChart
-            options={options}
-            series={state.series}
-            type="area"
-            height={350}
-          />
+          <ReactApexChart options={options} series={state.series} type="area" height={350} />
         </div>
       </div>
     </div>
