@@ -85,6 +85,7 @@ const UserEdit: React.FC = () => {
             try {
                 const response = await api.get(`/api/users/${id}`);
                 const userData = response.data.data;
+                console.log(userData)
                 setValue('name', userData.name);
                 setValue('email', userData.email);
                 setValue('mobile', userData.mobile);
@@ -124,7 +125,7 @@ const UserEdit: React.FC = () => {
             await api.put(`/api/users/${id}`, updateData);
 
             showAlert('موفقیت', 'کاربر با موفقیت به‌روزرسانی شد.', 'success');
-            navigate('/users/list');
+            navigate('/admin/users/list');
         } catch (error: any) {
             if (error.response && error.response.status === 422) {
                 const validationErrors = error.response.data.errors;

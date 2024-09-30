@@ -87,7 +87,7 @@ const ProjectList: React.FC = () => {
     }, [showAlert]);
 
     const handleDetails = (projectId: number) => {
-        navigate(`/projects/edit/${projectId}`);
+         navigate(`/admin/projects/edit/${projectId}`);
     };
 
     if (loading) {
@@ -114,7 +114,7 @@ const ProjectList: React.FC = () => {
                 </nav>
             </div>
 
-            <TableComponent<Project>
+            <TableComponent
                 headers={['ایدی', 'نام پروژه', 'نام کارفرما', 'شماره تماس', 'زمان اتمام پروژه', 'وضعیت پروژه', 'هزینه ی کل پروژه', 'هزینه ی پرداخت شده',]}
                 data={projects.map(project => ({
                     id: project.id,

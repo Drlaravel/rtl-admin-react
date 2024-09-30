@@ -100,7 +100,7 @@ const InvoiceLogs: React.FC = () => {
         </nav>
       </div>
 
-      <TableComponent<Log>
+      <TableComponent
         headers={['ایدی', 'شناسه پرداخت', 'شناسه کاربر', 'IP کاربر', 'عملیات', 'داده']}
         data={logs.map((log) => ({
           id: log.id,

@@ -94,7 +94,7 @@ const HostAdd: React.FC = () => {
       await api.post('/api/hosts', data);
       showAlert('موفقیت', 'هاست با موفقیت ایجاد شد.', 'success');
       reset();
-      navigate('/hosts/list');
+      navigate('/admin/hosts/list');
     } catch (error) {
       console.error('Error creating host:', error);
       showAlert('خطا!', 'ایجاد هاست با مشکل مواجه شد.', 'error');

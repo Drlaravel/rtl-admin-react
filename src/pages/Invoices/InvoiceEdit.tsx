@@ -56,7 +56,7 @@ interface OptionType {
 }
 
 const InvoiceEdit: React.FC = () => {
-    const { id } = useParams<{ id: string }>(); // دریافت آیدی فاکتور از پارامترهای URL
+    const { id } = useParams<{ id: string }>();
     const { register, handleSubmit, control, setValue, watch, formState: { errors } } = useForm<InvoiceFormData>({
         defaultValues: {
             amount: 0,
@@ -76,6 +76,9 @@ const InvoiceEdit: React.FC = () => {
     const [hosts, setHosts] = useState<OptionType[]>([]);
     const [domains, setDomains] = useState<OptionType[]>([]);
     const [supports, setSupports] = useState<OptionType[]>([]);
+    const [invoiceDate, setInvoiceDate] = useState<string | null>(null);
+    const [dueDate, setDueDate] = useState<string | null>(null);
+    const [expiryDate, setExpiryDate] = useState<string | null>(null);
     const navigate = useNavigate();
 
     const showAlert = (title: string, text: string, icon: 'success' | 'error' | 'warning', confirmButtonText = 'باشه') => {
@@ -86,7 +89,7 @@ const InvoiceEdit: React.FC = () => {
         try {
             await api.put(`/api/payments/${id}`, data);
             showAlert('موفقیت', 'فاکتور با موفقیت ویرایش شد.', 'success');
-            navigate('/invoices/list');
+            navigate('/admin/invoices/list');
         } catch (error) {
             console.error('Error updating invoice:', error);
             showAlert('خطا!', 'ویرایش فاکتور با مشکل مواجه شد.', 'error');
@@ -117,13 +120,15 @@ const InvoiceEdit: React.FC = () => {
             try {
                 const response = await api.get(`/api/payments/${id}`);
                 const invoiceData = response.data.data;
+                console.log(invoiceData)
                 setValue('amount', invoiceData.amount);
                 setValue('title', invoiceData.title);
-                setValue('date', invoiceData.date);
+                setInvoiceDate(invoiceData.date);
+                setDueDate(invoiceData.due_date);
+                setExpiryDate(invoiceData.expiry_date);
                 setValue('authority', invoiceData.authority || '');
                 setValue('status', invoiceData.status);
                 setValue('payment_type', invoiceData.payment_type);
-                setValue('due_date', invoiceData.due_date);
                 setValue('expiry_date', invoiceData.expiry_date || '');
                 setValue('item_type', invoiceData.project_id ? 'project' : invoiceData.host_id ? 'host' : invoiceData.domain_id ? 'domain' : 'support');
                 setValue('item_id', invoiceData.project_id || invoiceData.host_id || invoiceData.domain_id || invoiceData.support_id);
@@ -197,25 +202,40 @@ const InvoiceEdit: React.FC = () => {
                                     placeholder="تاریخ فاکتور"
                                     locale={persian_fa}
                                     calendarPosition="bottom-right"
+                                    value={invoiceDate} // Set initial value from state
+                                    onChange={(date) => setInvoiceDate(date?.format() || '')}
                                     inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.date ? 'border-red-500' : 'border-stroke'}`}
                                     containerStyle={{ width: '100%' }}
-                                    onChange={(date) => setValue('date', date?.format() || '')}
                                 />
                                 {errors.date && <p className="text-danger text-3 mt-2.5">{errors.date.message}</p>}
                             </div>
 
                             <div className="my-4.5">
-                                <label className="block mb-2.5 text-black dark:text-white">تاریخ سررسید</label>
+                                <label className="block mb-2.5 text-black dark:text-white">تاریخ انقضا</label>
                                 <DatePicker
                                     calendar={persian}
-                                    placeholder="تاریخ سررسید"
+                                    placeholder="تاریخ مهلت"
                                     locale={persian_fa}
-                                    calendarPosition="bottom-right"
+                                    value={dueDate} // Set initial value from state
+                                    onChange={(date) => setDueDate(date?.format() || '')}
                                     inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.due_date ? 'border-red-500' : 'border-stroke'}`}
                                     containerStyle={{ width: '100%' }}
-                                    onChange={(date) => setValue('due_date', date?.format() || '')}
                                 />
                                 {errors.due_date && <p className="text-danger text-3 mt-2.5">{errors.due_date.message}</p>}
+                            </div>
+
+                            <div className="my-4.5">
+                                <label className="block mb-2.5 text-black dark:text-white">تاریخ مهلت</label>
+                                <DatePicker
+                                    calendar={persian}
+                                    placeholder="تاریخ انقضا"
+                                    locale={persian_fa}
+                                    value={dueDate} // Set initial value from state
+                                    onChange={(date) => setExpiryDate(date?.format() || '')}
+                                    inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.due_date ? 'border-red-500' : 'border-stroke'}`}
+                                    containerStyle={{ width: '100%' }}
+                                />
+                                {errors.expiryDate && <p className="text-danger text-3 mt-2.5">{errors.expiryDate.message}</p>}
                             </div>
                         </div>
 

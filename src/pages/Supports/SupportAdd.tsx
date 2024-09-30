@@ -89,7 +89,7 @@ const SupportAdd: React.FC = () => {
     try {
       await api.post(`/api/supports`, requestData);
       showAlert('موفقیت', 'پشتیبانی با موفقیت ایجاد شد.', 'success');
-      navigate('/supports/list');
+      navigate('/admin/supports/list');
     } catch (error) {
       console.error('Error creating support:', error);
       showAlert('خطا!', 'ایجاد پشتیبانی با مشکل مواجه شد.', 'error');

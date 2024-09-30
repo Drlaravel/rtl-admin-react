@@ -88,7 +88,7 @@ const UserAdd: React.FC = () => {
                 type: data.type,
             });
             showAlert('موفقیت', 'کاربر با موفقیت ایجاد شد.', 'success');
-            navigate('/users/list');
+            navigate('/admin/users/list');
         } catch (error: any) {
             if (error.response && error.response.status === 422) {
                 // خطاهای اعتبارسنجی را از سرور دریافت کنید و به کاربر نمایش دهید

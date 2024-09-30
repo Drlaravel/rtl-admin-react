@@ -17,6 +17,8 @@ interface Payment {
     amount: number;
     status: 'paid' | 'pending' | 'rejected';
     date: string;
+    due_date: string;
+    expiry_date: string;
 }
 
 interface Domain {
@@ -25,6 +27,9 @@ interface Domain {
     reminder_date: string;
     purchase_type: 'ours' | 'customer';
     status: 'yes' | 'no';
+    purchase_site_username?: string;
+    purchase_site_password?: string;
+    purchase_site_url?: string;
 }
 
 interface Host {
@@ -77,6 +82,8 @@ const ProjectEdit: React.FC = () => {
     const [details, setDetails] = useState<string>('');
     const [endDate, setEndDate] = useState<string | null>(null);
     const [paymentDates, setPaymentDates] = useState<string[]>([]);
+    const [dueDates, setDueDates] = useState<string[]>([]);
+    const [expiryDates, setExpiryDates] = useState<string[]>([]);
     const [domainExpiryDates, setDomainExpiryDates] = useState<string[]>([]);
     const [domainReminderDates, setDomainReminderDates] = useState<string[]>([]);
     const [hostExpiryDate, setHostExpiryDate] = useState<string | null>(null);
@@ -121,7 +128,7 @@ const ProjectEdit: React.FC = () => {
             try {
                 const response = await api.get(`/api/projects/${projectId}`);
                 const projectData = response.data.data;
-
+                console.log(projectData)
                 // Setting values in the form
                 setValue('name', projectData.name || '');
                 setValue('status', projectData.status || 'start');
@@ -148,6 +155,8 @@ const ProjectEdit: React.FC = () => {
                 if (Array.isArray(projectData.payments)) {
                     replacePayments(projectData.payments);
                     setPaymentDates(projectData.payments.map((payment: Payment) => payment.date || ''));
+                    setDueDates(projectData.payments.map((payment: Payment) => payment.due_date || ''));
+                    setExpiryDates(projectData.payments.map((payment: Payment) => payment.expiry_date || ''));
                 }
 
                 if (Array.isArray(projectData.domains)) {
@@ -165,7 +174,7 @@ const ProjectEdit: React.FC = () => {
                     setValue('host', projectData.host[0]);
                     setHostExpiryDate(projectData.host[0].expiry_date || '');
                     setHostReminderDate(projectData.host[0].reminder_date || '');
-                  }
+                }
 
             } catch (error) {
                 console.error('Error fetching project data:', error);
@@ -187,8 +196,11 @@ const ProjectEdit: React.FC = () => {
                     end_date: endDate,
                     payments: data.payments.map((payment, index) => ({
                         ...payment,
-                        payment_date: paymentDates[index],
+                        payment_date: paymentDates[index]?? '',
+                        due_date: dueDates[index] ?? '',
+                        expiry_date: expiryDates[index]?? '', // بررسی اینکه این مقدار به درستی تنظیم شده باشد
                     })),
+
                     domains: data.domains.map((domain, index) => ({
                         ...domain,
                         expiry_date: domainExpiryDates[index],
@@ -199,9 +211,11 @@ const ProjectEdit: React.FC = () => {
                         expiry_date: hostExpiryDate,
                         reminder_date: hostReminderDate,
                     }
+
                 });
+
                 showAlert('موفقیت', 'پروژه با موفقیت به‌روزرسانی شد.', 'success');
-                navigate('/projects/list');
+                navigate('/admin/projects/list');
             } catch (error) {
                 if (axios.isAxiosError(error)) {
                     const errorMessage = error.response?.data ? JSON.stringify(error.response.data) : 'پاسخی از سرور دریافت نشد.';
@@ -403,90 +417,176 @@ const ProjectEdit: React.FC = () => {
                             </>
                         )}
 
-                        {step === 2 && (
+                        { step === 2 && (
                             <>
-                                {/* مدیریت پرداخت ها */}
                                 {/* پرداخت‌ها */}
                                 <section className="my-5">
                                     <h3 className="mb-5 text-lg font-semibold text-black dark:text-white">پرداخت‌ها</h3>
                                     <div className="grid grid-cols-2 gap-6 mb-4.5">
-                                    {paymentFields.map((field, index) => (
+                                        {paymentFields.map((field, index) => (
+                                            <div key={field.id}>
+                                                <div className="mb-4.5">
+                                                    <label className="mb-2.5 block text-black dark:text-white">علت پرداخت</label>
+                                                    <input
+                                                        type="text"
+                                                        {...register(`payments.${index}.title`, { required: 'علت پرداخت الزامی است.' })}
+                                                        className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.title ? 'border-red-500' : 'border-stroke'}`}
+                                                        placeholder="علت پرداخت را وارد کنید"
+                                                    />
+                                                    {errors.payments?.[index]?.title && <p className="text-danger text-3 mt-2.5">{errors.payments[index].title.message}</p>}
+                                                </div>
 
+                                                <div className="mb-4.5">
+                                                    <label className="mb-2.5 block text-black dark:text-white">مبلغ پرداخت شده</label>
+                                                    <input
+                                                        type="number"
+                                                        {...register(`payments.${index}.amount`, { required: 'مبلغ پرداخت شده الزامی است.', valueAsNumber: true })}
+                                                        className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.amount ? 'border-red-500' : 'border-stroke'}`}
+                                                        placeholder="مبلغ پرداخت را وارد کنید"
+                                                    />
+                                                    {errors.payments?.[index]?.amount && <p className="text-danger text-3 mt-2.5">{errors.payments[index].amount.message}</p>}
+                                                </div>
 
+                                                <div className="mb-4.5">
+                                                    <label className="mb-2.5 block text-black dark:text-white">وضعیت پرداخت</label>
+                                                    <select
+                                                        {...register(`payments.${index}.status`, {
+                                                            required: "وضعیت پرداخت الزامی است.",
+                                                        })}
+                                                        className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.status
+                                                                ? "border-red-500"
+                                                                : "border-stroke"
+                                                            }`}
+                                                    >
+                                                        <option value="paid">پرداخت شده</option>
+                                                        <option value="pending">در انتظار</option>
+                                                        <option value="rejected">رد شده</option>
+                                                    </select>
+                                                    {errors.payments?.[index]?.status && (
+                                                        <p className="text-danger text-3 mt-2.5">
+                                                            {errors.payments[index].status.message}
+                                                        </p>
+                                                    )}
+                                                </div>
 
-                                        <div className="mb-4.5" key={field.id}>
-                                            <div className="mb-4.5">
-                                                <label className="mb-2.5 block text-black dark:text-white">علت پرداخت</label>
-                                                <input
-                                                    type="text"
-                                                    {...register(`payments.${index}.title`, { required: 'علت پرداخت الزامی است.' })}
-                                                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.title ? 'border-red-500' : 'border-stroke'}`}
-                                                    placeholder="علت پرداخت را وارد کنید"
-                                                />
-                                                {errors.payments?.[index]?.title && <p className="text-danger text-3 mt-2.5">{errors.payments[index].title.message}</p>}
-                                            </div>
+                                                {/* تاریخ برای پرداخت شده */}
+                                                {watch(`payments.${index}.status`) === "paid" && (
+                                                    <div className="mb-4.5">
+                                                        <label className="mb-2.5 block text-black dark:text-white">
+                                                            تاریخ پرداخت
+                                                        </label>
+                                                        <DatePicker
+                                                            calendar={persian}
+                                                            placeholder="تاریخ پرداخت را وارد کنید"
+                                                            locale={persian_fa}
+                                                            calendarPosition="bottom-right"
+                                                            inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.date
+                                                                    ? "border-red-500"
+                                                                    : "border-stroke"
+                                                                }`}
+                                                            containerStyle={{ width: "100%" }}
+                                                            value={paymentDates[index]}
+                                                            onChange={(date) => {
+                                                                const newDates = [...paymentDates];
+                                                                newDates[index] = date?.format() || "";
+                                                                setPaymentDates(newDates);
+                                                            }}
+                                                        />
+                                                        {errors.payments?.[index]?.date && (
+                                                            <p className="text-danger text-3 mt-2.5">
+                                                                {errors.payments[index].date.message}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                )}
 
-                                            <div className="mb-4.5">
-                                                <label className="mb-2.5 block text-black dark:text-white">مبلغ پرداخت شده</label>
-                                                <input
-                                                    type="number"
-                                                    {...register(`payments.${index}.amount`, { required: 'مبلغ پرداخت شده الزامی است.', valueAsNumber: true })}
-                                                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.amount ? 'border-red-500' : 'border-stroke'}`}
-                                                    placeholder="مبلغ پرداخت را وارد کنید"
-                                                />
-                                                {errors.payments?.[index]?.amount && <p className="text-danger text-3 mt-2.5">{errors.payments[index].amount.message}</p>}
-                                            </div>
+                                                {/* مهلت پرداخت برای در انتظار */}
+                                                {watch(`payments.${index}.status`) === "pending" && (
+                                                    <div className="mb-4.5">
+                                                        <label className="mb-2.5 block text-black dark:text-white">
+                                                            مهلت پرداخت
+                                                        </label>
+                                                        <DatePicker
+                                                            calendar={persian}
+                                                            placeholder="مهلت پرداخت را وارد کنید"
+                                                            locale={persian_fa}
+                                                            calendarPosition="bottom-right"
+                                                            inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.due_date
+                                                                    ? "border-red-500"
+                                                                    : "border-stroke"
+                                                                }`}
+                                                            containerStyle={{ width: "100%" }}
+                                                            value={dueDates[index]}
+                                                            onChange={(date) => {
+                                                                const newDueDates = [...dueDates];
+                                                                newDueDates[index] = date?.format() || "";
+                                                                setDueDates(newDueDates);
+                                                            }}
+                                                        />
+                                                        {errors.payments?.[index]?.due_date && (
+                                                            <p className="text-danger text-3 mt-2.5">
+                                                                {errors.payments[index].due_date.message}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                )}
 
-                                            <div className="mb-4.5">
-                                                <label className="mb-2.5 block text-black dark:text-white">وضعیت پرداخت</label>
-                                                <select
-                                                    {...register(`payments.${index}.status`, { required: 'وضعیت پرداخت الزامی است.' })}
-                                                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.status ? 'border-red-500' : 'border-stroke'}`}
+                                                {/* تاریخ رد شدن برای رد شده */}
+                                                {watch(`payments.${index}.status`) === "rejected" && (
+                                                    <div className="mb-4.5">
+                                                        <label className="mb-2.5 block text-black dark:text-white">
+                                                            تاریخ رد شدن
+                                                        </label>
+                                                        <DatePicker
+                                                            calendar={persian}
+                                                            placeholder="تاریخ رد شدن را وارد کنید"
+                                                            locale={persian_fa}
+                                                            calendarPosition="bottom-right"
+                                                            inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.expiry_date
+                                                                    ? "border-red-500"
+                                                                    : "border-stroke"
+                                                                }`}
+                                                            containerStyle={{ width: "100%" }}
+                                                            value={expiryDates[index]}
+                                                            onChange={(date) => {
+                                                                const newExpiryDates = [...expiryDates];
+                                                                newExpiryDates[index] = date?.format() || "";
+                                                                setExpiryDates(newExpiryDates);
+                                                            }}
+                                                        />
+                                                        {errors.payments?.[index]?.expiry_date && (
+                                                            <p className="text-danger text-3 mt-2.5">
+                                                                {errors.payments[index].expiry_date.message}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                )}
+
+                                                {/* دکمه حذف پرداخت */}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removePayment(index)}
+                                                    className="flex items-center justify-center gap-2 rounded bg-red-500 py-2.5 px-4.5 font-medium text-white"
                                                 >
-                                                    <option value="paid">پرداخت شده</option>
-                                                    <option value="pending">در انتظار</option>
-                                                    <option value="rejected">رد شده</option>
-                                                </select>
-                                                {errors.payments?.[index]?.status && <p className="text-danger text-3 mt-2.5">{errors.payments[index].status.message}</p>}
+                                                    حذف
+                                                </button>
                                             </div>
+                                        ))}
+                                    </div>
 
-                                            <div className="mb-4.5">
-                                                <label className="mb-2.5 block text-black dark:text-white">تاریخ پرداخت</label>
-                                                <DatePicker
-                                                    calendar={persian}
-                                                    placeholder="تاریخ پرداخت را وارد کنید"
-                                                    locale={persian_fa}
-                                                    calendarPosition="bottom-right"
-                                                    inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.payment_date ? 'border-red-500' : 'border-stroke'}`}
-                                                    containerStyle={{ width: "100%" }}
-                                                    value={paymentDates[index]}
-                                                    onChange={(date) => {
-                                                        const newDates = [...paymentDates];
-                                                        newDates[index] = date?.format() || '';
-                                                        setPaymentDates(newDates);
-                                                    }}
-                                                />
-
-
-                                                {errors.payments?.[index]?.payment_date && <p className="text-danger text-3 mt-2.5">{errors.payments[index].payment_date.message}</p>}
-                                            </div>
-
-                                            <button type="button" onClick={() => removePayment(index)} className="flex items-center justify-center gap-2 rounded bg-red-500 py-2.5 px-4.5 font-medium text-white">حذف</button>
-                                        </div>
-
-                                    ))}
-</div>
                                     <button
                                         type="button"
-                                        onClick={() => appendPayment({ title: '', amount: 0, status: 'pending', payment_date: '' })}
+                                        onClick={() =>
+                                            appendPayment({ title: "", amount: 0, status: "pending", date: "", due_date: "", expiry_date: "" })
+                                        }
                                         className="flex items-center justify-center gap-2 rounded bg-primary py-2.5 px-4.5 font-medium text-white"
                                     >
                                         اضافه کردن پرداخت
                                     </button>
-
                                 </section>
                             </>
                         )}
+
 
                         {step === 3 && (
                             <>
@@ -494,75 +594,114 @@ const ProjectEdit: React.FC = () => {
                                 <section className="my-5">
                                     <h3 className="mb-5 text-lg font-semibold text-black dark:text-white">مدیریت دامنه‌ها</h3>
                                     <div className="grid grid-cols-2 gap-6 mb-4.5">
-                                    {domainFields.map((field, index) => (
-                                        <div key={field.id} className="mb-4.5">
-                                            <div className="mb-4.5">
-                                                <label className="mb-2.5 block text-black dark:text-white">نام دامنه</label>
-                                                <input
-                                                    type="text"
-                                                    {...register(`domains.${index}.name`, { required: 'نام دامنه الزامی است.' })}
-                                                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.name ? 'border-red-500' : 'border-stroke'}`}
-                                                    placeholder="نام دامنه را وارد کنید"
-                                                />
-                                                {errors.domains?.[index]?.name && <p className="text-danger text-3 mt-2.5">{errors.domains[index].name.message}</p>}
-                                            </div>
+                                        {domainFields.map((field, index) => {
+                                            const purchaseType = watch(`domains.${index}.purchase_type`);
+                                            return (
+                                                <div key={field.id} className="mb-4.5">
+                                                    <div className="mb-4.5">
+                                                        <label className="mb-2.5 block text-black dark:text-white">نام دامنه</label>
+                                                        <input
+                                                            type="text"
+                                                            {...register(`domains.${index}.name`, { required: 'نام دامنه الزامی است.' })}
+                                                            className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.name ? 'border-red-500' : 'border-stroke'}`}
+                                                            placeholder="نام دامنه را وارد کنید"
+                                                        />
+                                                        {errors.domains?.[index]?.name && <p className="text-danger text-3 mt-2.5">{errors.domains[index].name.message}</p>}
+                                                    </div>
 
-                                            <div className="mb-4.5">
-                                                <label className="mb-2.5 block text-black dark:text-white">نوع خرید دامنه</label>
-                                                <select
-                                                    {...register(`domains.${index}.purchase_type`, { required: 'نوع خرید دامنه الزامی است.' })}
-                                                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.purchase_type ? 'border-red-500' : 'border-stroke'}`}
-                                                >
-                                                    <option value="ours">خریداری شده توسط ما</option>
-                                                    <option value="customer">خریداری شده توسط مشتری</option>
-                                                </select>
-                                                {errors.domains?.[index]?.purchase_type && <p className="text-danger text-3 mt-2.5">{errors.domains[index].purchase_type.message}</p>}
-                                            </div>
+                                                    <div className="mb-4.5">
+                                                        <label className="mb-2.5 block text-black dark:text-white">نوع خرید دامنه</label>
+                                                        <select
+                                                            {...register(`domains.${index}.purchase_type`, { required: 'نوع خرید دامنه الزامی است.' })}
+                                                            className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.purchase_type ? 'border-red-500' : 'border-stroke'}`}
+                                                        >
+                                                            <option value="ours">خریداری شده توسط ما</option>
+                                                            <option value="customer">خریداری شده توسط مشتری</option>
+                                                        </select>
+                                                        {errors.domains?.[index]?.purchase_type && <p className="text-danger text-3 mt-2.5">{errors.domains[index].purchase_type.message}</p>}
+                                                    </div>
 
-                                            <div className="mb-4.5">
-                                                <label className="mb-2.5 block text-black dark:text-white">تاریخ انقضا</label>
-                                                <DatePicker
-                                                    calendar={persian}
-                                                    placeholder='تاریخ انقضا را وارد کنید'
-                                                    locale={persian_fa}
-                                                    calendarPosition="bottom-right"
-                                                    inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.expiry_date ? 'border-red-500' : 'border-stroke'}`}
-                                                    containerStyle={{ width: "100%" }}
-                                                    value={domainExpiryDates[index]}
-                                                    onChange={(date) => {
-                                                        const newExpiryDates = [...domainExpiryDates];
-                                                        newExpiryDates[index] = date?.format() || '';
-                                                        setDomainExpiryDates(newExpiryDates);
-                                                    }}
-                                                />
-                                                {errors.domains?.[index]?.expiry_date && <p className="text-danger text-3 mt-2.5">{errors.domains[index].expiry_date.message}</p>}
-                                            </div>
+                                                    {purchaseType === 'customer' && (
+                                                        <>
+                                                            {/* فیلدهای اضافی برای دامنه‌های خریداری شده توسط مشتری */}
+                                                            <div className="mb-4.5">
+                                                                <label className="mb-2.5 block text-black dark:text-white">یوزرنیم</label>
+                                                                <input
+                                                                    type="text"
+                                                                    {...register(`domains.${index}.purchase_site_username`, { required: 'یوزرنیم الزامی است.' })}
+                                                                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.purchase_site_username ? 'border-red-500' : 'border-stroke'}`}
+                                                                    placeholder="یوزرنیم را وارد کنید"
+                                                                />
+                                                                {errors.domains?.[index]?.purchase_site_username && <p className="text-danger text-3 mt-2.5">{errors.domains[index].purchase_site_username.message}</p>}
+                                                            </div>
 
-                                            <div className="mb-4.5">
-                                                <label className="mb-2.5 block text-black dark:text-white">تاریخ یادآوری</label>
-                                                <DatePicker
-                                                    calendar={persian}
-                                                    placeholder='تاریخ یادآوری را وارد کنید'
-                                                    locale={persian_fa}
-                                                    calendarPosition="bottom-right"
-                                                    inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.reminder_date ? 'border-red-500' : 'border-stroke'}`}
-                                                    containerStyle={{ width: "100%" }}
-                                                    value={domainReminderDates[index]}
-                                                    onChange={(date) => {
-                                                        const newReminderDates = [...domainReminderDates];
-                                                        newReminderDates[index] = date?.format() || '';
-                                                        setDomainReminderDates(newReminderDates);
-                                                    }}
-                                                />
-                                                {errors.domains?.[index]?.reminder_date && <p className="text-danger text-3 mt-2.5">{errors.domains[index].reminder_date.message}</p>}
-                                            </div>
-                                            <input type="hidden"
-                                                {...register(`domains.${index}.status`)}
-                                            />
-                                            <button type="button" onClick={() => removeDomain(index)} className="flex items-center justify-center gap-2 rounded bg-red-500 py-2.5 px-4.5 font-medium text-white">حذف دامنه</button>
-                                        </div>
-                                    ))}
-</div>
+                                                            <div className="mb-4.5">
+                                                                <label className="mb-2.5 block text-black dark:text-white">پسورد</label>
+                                                                <input
+                                                                    type="password"
+                                                                    {...register(`domains.${index}.purchase_site_password`, { required: 'پسورد الزامی است.' })}
+                                                                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.purchase_site_password ? 'border-red-500' : 'border-stroke'}`}
+                                                                    placeholder="پسورد را وارد کنید"
+                                                                />
+                                                                {errors.domains?.[index]?.purchase_site_password && <p className="text-danger text-3 mt-2.5">{errors.domains[index].purchase_site_password.message}</p>}
+                                                            </div>
+
+                                                            <div className="mb-4.5">
+                                                                <label className="mb-2.5 block text-black dark:text-white">آدرس سایت خریداری شده</label>
+                                                                <input
+                                                                    type="text"
+                                                                    {...register(`domains.${index}.purchase_site_url`, { required: 'آدرس سایت الزامی است.' })}
+                                                                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.purchase_site_url ? 'border-red-500' : 'border-stroke'}`}
+                                                                    placeholder="آدرس سایت خریداری شده را وارد کنید"
+                                                                />
+                                                                {errors.domains?.[index]?.purchase_site_url && <p className="text-danger text-3 mt-2.5">{errors.domains[index].purchase_site_url.message}</p>}
+                                                            </div>
+                                                        </>
+                                                    )}
+
+                                                    <div className="mb-4.5">
+                                                        <label className="mb-2.5 block text-black dark:text-white">تاریخ انقضا</label>
+                                                        <DatePicker
+                                                            calendar={persian}
+                                                            placeholder='تاریخ انقضا را وارد کنید'
+                                                            locale={persian_fa}
+                                                            calendarPosition="bottom-right"
+                                                            inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.expiry_date ? 'border-red-500' : 'border-stroke'}`}
+                                                            containerStyle={{ width: "100%" }}
+                                                            value={domainExpiryDates[index]}
+                                                            onChange={(date) => {
+                                                                const newExpiryDates = [...domainExpiryDates];
+                                                                newExpiryDates[index] = date?.format() || '';
+                                                                setDomainExpiryDates(newExpiryDates);
+                                                            }}
+                                                        />
+                                                        {errors.domains?.[index]?.expiry_date && <p className="text-danger text-3 mt-2.5">{errors.domains[index].expiry_date.message}</p>}
+                                                    </div>
+
+                                                    <div className="mb-4.5">
+                                                        <label className="mb-2.5 block text-black dark:text-white">تاریخ یادآوری</label>
+                                                        <DatePicker
+                                                            calendar={persian}
+                                                            placeholder='تاریخ یادآوری را وارد کنید'
+                                                            locale={persian_fa}
+                                                            calendarPosition="bottom-right"
+                                                            inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.reminder_date ? 'border-red-500' : 'border-stroke'}`}
+                                                            containerStyle={{ width: "100%" }}
+                                                            value={domainReminderDates[index]}
+                                                            onChange={(date) => {
+                                                                const newReminderDates = [...domainReminderDates];
+                                                                newReminderDates[index] = date?.format() || '';
+                                                                setDomainReminderDates(newReminderDates);
+                                                            }}
+                                                        />
+                                                        {errors.domains?.[index]?.reminder_date && <p className="text-danger text-3 mt-2.5">{errors.domains[index].reminder_date.message}</p>}
+                                                    </div>
+                                                    <input type="hidden" {...register(`domains.${index}.status`)} />
+                                                    <button type="button" onClick={() => removeDomain(index)} className="flex items-center justify-center gap-2 rounded bg-red-500 py-2.5 px-4.5 font-medium text-white">حذف دامنه</button>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
                                     <button
                                         type="button"
                                         onClick={() => appendDomain({ name: '', expiry_date: '', reminder_date: '', purchase_type: 'ours' })}
@@ -573,6 +712,7 @@ const ProjectEdit: React.FC = () => {
                                 </section>
                             </>
                         )}
+
 
                         {step === 4 && (
                             <>
@@ -865,7 +1005,7 @@ const ProjectEdit: React.FC = () => {
                         </div>
                     </form>
                 </div>
-            </div>
+            </div >
         </>
     );
 };

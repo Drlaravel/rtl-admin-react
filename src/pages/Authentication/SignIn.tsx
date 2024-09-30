@@ -61,11 +61,12 @@ const SignIn: React.FC = () => {
         navigate('/user');
       }
     } catch (error: any) {
-      console.log(error)
+      console.log(error.response?.data?.error)
       setErrors((prevErrors) => ({
         ...prevErrors,
-        general: error.response?.data?.message || 'خطایی رخ داده است.',
+        general: error.response?.data?.error || 'خطایی رخ داده است.',
       }));
+
     } finally {
       setLoading(false);
     }

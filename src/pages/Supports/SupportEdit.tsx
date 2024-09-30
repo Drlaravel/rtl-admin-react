@@ -76,7 +76,8 @@ const SupportEdit: React.FC = () => {
 
   const [users, setUsers] = useState<OptionType[]>([]);
   const [projects, setProjects] = useState<OptionType[]>([]);
-
+  const [expiryDate, setExpiryDate] = useState<string | null>(null);
+  const [reminderDate, setReminderDate] = useState<string | null>(null);
   const showAlert = (title: string, text: string, icon: 'success' | 'error' | 'warning', confirmButtonText = 'باشه') => {
     return MySwal.fire({ title, text, icon, confirmButtonText });
   };
@@ -85,7 +86,7 @@ const SupportEdit: React.FC = () => {
     try {
       await api.put(`/api/supports/${id}`, data);
       showAlert('موفقیت', 'پشتیبانی با موفقیت ویرایش شد.', 'success');
-      navigate('/supports/list');
+      navigate('/admin/supports/list');
     } catch (error) {
       console.error('Error updating support:', error);
       showAlert('خطا!', 'ویرایش پشتیبانی با مشکل مواجه شد.', 'error');
@@ -133,6 +134,8 @@ const SupportEdit: React.FC = () => {
         setValue('project_id', supportData.project_id);
         setValue('user_id', supportData.user_id);
         setValue('shouldCreateInvoice', supportData.shouldCreateInvoice);
+        setExpiryDate(supportData.expiry_date);
+        setReminderDate(supportData.reminder_date);
       } catch (error) {
         console.error('Error fetching support data:', error);
         showAlert('خطا!', 'دریافت اطلاعات پشتیبانی با مشکل مواجه شد.', 'error');
@@ -205,7 +208,12 @@ const SupportEdit: React.FC = () => {
                   calendarPosition="bottom-right"
                   inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.expiry_date ? 'border-red-500' : 'border-stroke'}`}
                   containerStyle={{ width: '100%' }}
-                  onChange={(date) => setValue('expiry_date', date?.format() || '')}
+                  value={expiryDate} // مقداردهی از state
+                  onChange={(date) => {
+                    const formattedDate = date?.format() || '';
+                    setExpiryDate(formattedDate); // به‌روزرسانی state
+                    setValue('expiry_date', formattedDate); // به‌روزرسانی فرم
+                  }}
                 />
                 {errors.expiry_date && <p className="text-danger text-3 mt-2.5">{errors.expiry_date.message}</p>}
               </div>

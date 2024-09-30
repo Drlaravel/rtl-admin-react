@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
-import Logo from '../../images/logo/logo.svg';
-import ArrowDownIcon from '../icons/ArrowDownIcon';
-import MenuIcon from '../icons/MenuIcon';
+import Logo from '../../images/logo/logo.webp';
+import ArrowDownIcon from '../Icons/ArrowDownIcon';
+import MenuIcon from '../Icons/MenuIcon';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -58,7 +58,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     >
       <header className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
         <NavLink to="/admin/">
-          <img src={Logo} alt="Logo" />
+          <img className='text-center mx-auto flex' src={Logo} alt="Logo" />
         </NavLink>
 
         <button

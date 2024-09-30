@@ -98,7 +98,7 @@ const UserHostList: React.FC = () => {
         </nav>
       </div>
 
-      <TableComponent<Host>
+      <TableComponent
         headers={['نام کاربری', 'لینک', 'تاریخ انقضا', 'تاریخ یادآوری', 'فضا', 'قیمت', 'نوع خرید', 'یاداوری']}
         data={hosts.map((host) => ({
          

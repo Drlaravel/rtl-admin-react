@@ -46,7 +46,7 @@ const UserInvoiceList: React.FC = () => {
     const fetchInvoices = useCallback(
         async (page = 1) => {
             try {
-                const response = await api.get(`/api/payments?page=${page}`);
+                const response = await api.get(`/api/user/invoices?page=${page}`);
                 console.log(response)
                 setInvoices(response.data.invoices);
                 // setPageCount(response.data.data.last_page);
@@ -94,7 +94,7 @@ const UserInvoiceList: React.FC = () => {
                 </nav>
             </div>
 
-            <TableComponent<Invoice>
+            <TableComponent
                 headers={['عنوان', 'مبلغ', 'وضعیت', 'نوع پرداخت', 'تاریخ سررسید', 'نام پروژه/دامنه/پشتیبانی']}
                 data={invoices.map((invoice) => ({
 

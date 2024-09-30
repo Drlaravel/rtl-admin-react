@@ -105,12 +105,12 @@ const PaymentList: React.FC = () => {
 
   const handleDetails = (paymentId: number) => {
     console.log('Navigating to edit payment with ID:', paymentId);
-    navigate(`/invoices/edit/${paymentId}`);
+     navigate(`/admin/invoices/edit/${paymentId}`);
   };
 
   const handleViewInvoice = (paymentId: number) => {
     console.log('Viewing invoice for payment ID:', paymentId);
-    navigate(`/invoices/view/${paymentId}`);
+     navigate(`/admin/invoices/view/${paymentId}`);
   };
 
   if (loading) {

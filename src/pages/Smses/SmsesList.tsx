@@ -58,7 +58,7 @@ const SmsLogList: React.FC = () => {
       <Breadcrumb pageName="لاگ‌های پیامک" />
       <div className="container">
         <div className="mt-5 col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5">
-          <TableComponent<SmsLog>
+          <TableComponent
             headers={['ایدی', 'شماره موبایل', 'پیام', 'وضعیت', 'خطا', 'تاریخ ارسال']}
             data={logs.map((log) => ({
               id: log.id,

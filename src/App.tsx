@@ -85,6 +85,7 @@ function App() {
 
     return (
         <AuthProvider>
+             
             <Routes>
                 {/* مسیرهای عمومی (بدون نیاز به احراز هویت) */}
                 <Route
@@ -97,7 +98,15 @@ function App() {
                     }
                 />
 
-
+<Route
+                    path="/"
+                    element={
+                        <>
+                            <PageTitle title="ورود به crm اختصاصی تهران سایت" />
+                            <SignIn />
+                        </>
+                    }
+                />
 
                 <Route element={<PrivateRoute />}>
                     <Route path="user" element={<UserLayout />}>

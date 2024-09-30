@@ -78,7 +78,7 @@ const SmsAdd: React.FC = () => {
       try {
         await api.post('/api/sms/send', data);
         MySwal.fire('موفقیت', 'پیامک با موفقیت ارسال شد.', 'success');
-        navigate('/sms/logs'); // Redirect to SMS logs or any desired route
+        navigate('/admin/sms/logs'); // Redirect to SMS logs or any desired route
       } catch (error) {
         console.error('Error sending SMS:', error);
         MySwal.fire('خطا!', 'ارسال پیامک با مشکل مواجه شد.', 'error');

@@ -98,7 +98,7 @@ const UserList: React.FC = () => {
   );
 
   const handleDetails = (userId: number) => {
-    navigate(`/users/edit/${userId}`);
+     navigate(`/admin/users/edit/${userId}`);
   };
 
   if (loading) {
@@ -126,7 +126,7 @@ const UserList: React.FC = () => {
         </nav>
       </div>
 
-      <TableComponent<User>
+      <TableComponent
         headers={['ایدی', 'نام', 'ایمیل', 'موبایل', 'نقش‌ها', 'نوع کاربر', 'تاریخ ایجاد']}
         data={users.map((user) => ({
           id: user.id,
@@ -138,8 +138,14 @@ const UserList: React.FC = () => {
           created_at: new Date(user.created_at).toLocaleDateString('fa-IR'),
         }))}
         renderActions={(user) => (
-          <DropdownMenu handleDelete={() => handleDelete(user.id)} handleDetails={() => handleDetails(user.id)} />
+            <DropdownMenu
+                actions={[
+                    { label: 'حذف', onClick: () => handleDelete(user.id), className: 'text-red-500' },
+                    { label: 'ویرایش', onClick: () => handleDetails(user.id), className: 'text-blue-500' }
+                ]}
+            />
         )}
+       
       />
 
       {/* Pagination */}

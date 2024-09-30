@@ -83,7 +83,7 @@ const UserProjectList: React.FC = () => {
         </nav>
       </div>
 
-      <TableComponent<Project>
+      <TableComponent
         headers={[ 'نام پروژه', 'نام کارفرما', 'شماره تماس', 'زمان اتمام پروژه', 'وضعیت پروژه', 'هزینه کل پروژه']}
         data={projects.map((project) => ({
 

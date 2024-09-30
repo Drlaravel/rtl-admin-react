@@ -103,7 +103,7 @@ const SupportList: React.FC = () => {
 
   const handleDetails = (supportId: number) => {
     console.log('Navigating to edit support with ID:', supportId);
-    navigate(`/supports/edit/${supportId}`);
+     navigate(`/admin/supports/edit/${supportId}`);
   };
 
   if (loading) {
@@ -136,7 +136,7 @@ const SupportList: React.FC = () => {
         </nav>
       </div>
 
-      <TableComponent<Support>
+      <TableComponent
         headers={['ایدی','نام پروژه/کاربر', 'نام پشتیبانی', 'وضعیت', 'مدت زمان', 'قیمت', 'تاریخ انقضا', 'یاداوری']}
         data={supports.map((support) => ({
           id: support.id,
@@ -148,8 +148,14 @@ const SupportList: React.FC = () => {
           expiry_date: support.expiry_date ? support.expiry_date : 'نامشخص',
           reminder: support.reminder ? 'فعال' : 'غیرفعال',
         }))}
+        
         renderActions={(support) => (
-          <DropdownMenu handleDelete={() => handleDelete(support.id)} handleDetails={() => handleDetails(support.id)} />
+            <DropdownMenu
+                actions={[
+                    { label: 'حذف', onClick: () => handleDelete(support.id), className: 'text-red-500' },
+                    { label: 'ویرایش', onClick: () => handleDetails(support.id), className: 'text-blue-500' }
+                ]}
+            />
         )}
       />
 

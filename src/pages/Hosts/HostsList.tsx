@@ -100,7 +100,7 @@ const HostList: React.FC = () => {
   );
 
   const handleDetails = (hostId: number) => {
-    navigate(`/hosts/edit/${hostId}`);
+     navigate(`/admin/hosts/edit/${hostId}`);
   };
 
   if (loading) {
@@ -133,7 +133,7 @@ const HostList: React.FC = () => {
         </nav>
       </div>
 
-      <TableComponent<Host>
+      <TableComponent
         headers={['ایدی', 'نام کاربری', 'لینک', 'تاریخ انقضا', 'تاریخ یادآوری', 'فضا', 'قیمت', 'نوع خرید', 'یاداوری']}
         data={hosts.map((host) => ({
           id: host.id,
@@ -146,8 +146,14 @@ const HostList: React.FC = () => {
           purchase_type: host.purchase_type === 'ours' ? 'خریداری شده توسط ما' : 'خریداری شده توسط مشتری',
           reminder: host.reminder ? 'معتبر' : 'غیرمعتبر(نیاز به تمدید)',
         }))}
+      
         renderActions={(host) => (
-          <DropdownMenu handleDelete={() => handleDelete(host.id)} handleDetails={() => handleDetails(host.id)} />
+            <DropdownMenu
+                actions={[
+                    { label: 'حذف', onClick: () => handleDelete(host.id), className: 'text-red-500' },
+                    { label: 'ویرایش', onClick: () => handleDetails(host.id), className: 'text-blue-500' }
+                ]}
+            />
         )}
       />
 

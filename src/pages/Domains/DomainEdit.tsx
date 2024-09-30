@@ -47,6 +47,9 @@ interface DomainFormData {
   associated_with: 'project' | 'user' | '';
   project_id: number | null;
   user_id: number | null;
+  purchase_site_username?: string;
+  purchase_site_password?: string;
+  purchase_site_url?: string;
 }
 
 interface OptionType {
@@ -69,7 +72,8 @@ const DomainEdit: React.FC = () => {
       user_id: null,
     }
   });
-
+  const [expiryDate, setExpiryDate] = useState<string | null>(null);
+  const [reminderDate, setReminderDate] = useState<string | null>(null);
   const [users, setUsers] = useState<OptionType[]>([]);
   const [projects, setProjects] = useState<OptionType[]>([]);
 
@@ -81,7 +85,7 @@ const DomainEdit: React.FC = () => {
     try {
       await api.put(`/api/domains/${id}`, data);
       showAlert('موفقیت', 'دامنه با موفقیت ویرایش شد.', 'success');
-      navigate('/domains/list');
+      navigate('/admin/domains/list');
     } catch (error) {
       console.error('Error updating domain:', error);
       showAlert('خطا!', 'ویرایش دامنه با مشکل مواجه شد.', 'error');
@@ -128,6 +132,11 @@ const DomainEdit: React.FC = () => {
         setValue('associated_with', domainData.project_id ? 'project' : domainData.user_id ? 'user' : '');
         setValue('project_id', domainData.project_id);
         setValue('user_id', domainData.user_id);
+        setValue('purchase_site_username', domainData.purchase_site_username);
+        setValue('purchase_site_password', domainData.purchase_site_password);
+        setValue('purchase_site_url', domainData.purchase_site_url);
+        setExpiryDate(domainData.expiry_date);
+        setReminderDate(domainData.reminder_date);
       } catch (error) {
         console.error('Error fetching domain data:', error);
         showAlert('خطا!', 'دریافت اطلاعات دامنه با مشکل مواجه شد.', 'error');
@@ -139,15 +148,17 @@ const DomainEdit: React.FC = () => {
   }, [id, setValue]);
 
   const handleUserChange = (selectedOption: SingleValue<OptionType>) => {
-    setValue('user_id', selectedOption ? selectedOption.value : null);
+    setValue('user_id', Number(selectedOption?.value) || null);
+
   };
 
   const handleProjectChange = (selectedOption: SingleValue<OptionType>) => {
-    setValue('project_id', selectedOption ? selectedOption.value : null);
+    setValue('project_id', Number(selectedOption?.value) || null);
+
   };
 
   const associatedWith = watch('associated_with');
-
+  const purchaseType = watch('purchase_type');
   useEffect(() => {
     if (associatedWith === 'project') {
       setValue('user_id', null);
@@ -200,7 +211,12 @@ const DomainEdit: React.FC = () => {
                   calendarPosition="bottom-right"
                   inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.expiry_date ? 'border-red-500' : 'border-stroke'}`}
                   containerStyle={{ width: '100%' }}
-                  onChange={(date) => setValue('expiry_date', date?.format() || '')}
+                  value={expiryDate} // مقداردهی از state
+                  onChange={(date) => {
+                    const formattedDate = date?.format() || '';
+                    setExpiryDate(formattedDate); // به‌روزرسانی state
+                    setValue('expiry_date', formattedDate); // به‌روزرسانی فرم
+                  }}
                 />
                 {errors.expiry_date && <p className="text-danger text-3 mt-2.5">{errors.expiry_date.message}</p>}
               </div>
@@ -215,7 +231,12 @@ const DomainEdit: React.FC = () => {
                   calendarPosition="bottom-right"
                   inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.reminder_date ? 'border-red-500' : 'border-stroke'}`}
                   containerStyle={{ width: '100%' }}
-                  onChange={(date) => setValue('reminder_date', date?.format() || '')}
+                  value={reminderDate} // مقداردهی از state
+                  onChange={(date) => {
+                    const formattedDate = date?.format() || '';
+                    setReminderDate(formattedDate); // به‌روزرسانی state
+                    setValue('reminder_date', formattedDate); // به‌روزرسانی فرم
+                  }}
                 />
                 {errors.reminder_date && <p className="text-danger text-3 mt-2.5">{errors.reminder_date.message}</p>}
               </div>
@@ -290,8 +311,46 @@ const DomainEdit: React.FC = () => {
               </div>
             )}
 
+             {/* Show extra fields when "customer" is selected */}
+             {purchaseType === 'customer' && (
+              <>
+                <div className="my-4.5">
+                  <label className="block mb-2.5 text-black dark:text-white">یوزرنیم</label>
+                  <input
+                    type="text"
+                    {...register('purchase_site_username', { required: 'یوزرنیم الزامی است.' })}
+                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.purchase_site_username ? 'border-red-500' : 'border-stroke'}`}
+                    placeholder="یوزرنیم"
+                  />
+                  {errors.purchase_site_username && <p className="text-danger text-3 mt-2.5">{errors.purchase_site_username.message}</p>}
+                </div>
+
+                <div className="my-4.5">
+                  <label className="block mb-2.5 text-black dark:text-white">پسورد</label>
+                  <input
+                    type="password"
+                    {...register('purchase_site_password', { required: 'پسورد الزامی است.' })}
+                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.purchase_site_password ? 'border-red-500' : 'border-stroke'}`}
+                    placeholder="پسورد"
+                  />
+                  {errors.purchase_site_password && <p className="text-danger text-3 mt-2.5">{errors.purchase_site_password.message}</p>}
+                </div>
+
+                <div className="my-4.5">
+                  <label className="block mb-2.5 text-black dark:text-white">آدرس سایت خریداری شده</label>
+                  <input
+                    type="text"
+                    {...register('purchase_site_url', { required: 'آدرس سایت الزامی است.' })}
+                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.purchase_site_url ? 'border-red-500' : 'border-stroke'}`}
+                    placeholder="آدرس سایت خریداری شده"
+                  />
+                  {errors.purchase_site_url && <p className="text-danger text-3 mt-2.5">{errors.purchase_site_url.message}</p>}
+                </div>
+              </>
+            )}
+
             <button type="submit" className="mt-4 bg-primary text-white py-2 px-4 rounded">
-              ایجاد دامنه
+              اپدیت دامنه
             </button>
           </form>
         </div>

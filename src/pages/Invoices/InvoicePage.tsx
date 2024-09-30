@@ -116,7 +116,10 @@ const InvoicePage: React.FC = () => {
 
           <div className="border-b border-r border-stroke px-5 py-4 last:border-r-0 dark:border-strokedark xsm:border-b-0">
             <h5 className="mb-1.5 font-bold text-black dark:text-white">مبلغ قابل پرداخت :</h5>
-            <span className="text-sm font-medium">{new Intl.NumberFormat().format(payment.amount)} تومان</span>
+            <span className="text-sm font-medium">
+  {new Intl.NumberFormat().format(Number(payment.amount))} تومان
+</span>
+
           </div>
         </div>
 
@@ -145,7 +148,7 @@ const InvoicePage: React.FC = () => {
                 </div>
 
                 <div className="col-span-3">
-                  <p className="font-medium">{new Intl.NumberFormat().format(payment.amount)} تومان</p>
+                  <p className="font-medium">{new Intl.NumberFormat().format(Number(payment.amount))} تومان</p>
                 </div>
 
                 <div className="col-span-3">
@@ -159,7 +162,7 @@ const InvoicePage: React.FC = () => {
             <div className="w-full max-w-65">
               <p className="flex justify-between border-t border-stroke pt-5 dark:border-strokedark">
                 <span className="font-medium text-black dark:text-white">مجموع کل</span>
-                <span className="font-bold text-meta-3">{new Intl.NumberFormat().format(payment.amount)} تومان</span>
+                <span className="font-bold text-meta-3">{new Intl.NumberFormat().format(Number(payment.amount))} تومان</span>
               </p>
             </div>
           </div>

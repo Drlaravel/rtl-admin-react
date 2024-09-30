@@ -86,7 +86,7 @@ const InvoiceAdd: React.FC = () => {
         try {
             await api.post('/api/payments', data);
             showAlert('موفقیت', 'فاکتور با موفقیت ایجاد شد.', 'success');
-            navigate('/invoices/list');
+            navigate('/admin/invoices/list');
         } catch (error) {
             console.error('Error creating invoice:', error);
             showAlert('خطا!', 'ایجاد فاکتور با مشکل مواجه شد.', 'error');

@@ -96,7 +96,7 @@ const UserDomainList: React.FC = () => {
                 </nav>
             </div>
 
-            <TableComponent<Domain>
+            <TableComponent
                 headers={['ایدی', 'نام دامنه', 'تاریخ انقضا', 'تاریخ یادآوری', 'نوع خرید', 'قیمت', 'یاداوری']}
                 data={domains.map((domain) => ({
                     id: domain.id,

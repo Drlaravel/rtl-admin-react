@@ -62,7 +62,7 @@ const NotificationTable: React.FC = () => {
         <div className="notification-list">
             <h2 className="text-title-md2 font-bold mb-6">لیست نوتیفیکیشن‌ها</h2>
 
-            <TableComponent<Notification>
+            <TableComponent
                 headers={['ایدی', 'پیام', 'زمان', 'مربوط به', 'وضعیت']}
                 data={notifications.map((notification) => ({
                     id: notification.id,

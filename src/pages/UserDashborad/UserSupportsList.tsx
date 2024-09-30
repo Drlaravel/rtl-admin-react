@@ -99,7 +99,7 @@ const UserSupportsList: React.FC = () => {
         </nav>
       </div>
 
-      <TableComponent<Support>
+      <TableComponent
         headers={['نام پشتیبانی', 'وضعیت', 'مدت زمان', 'قیمت', 'تاریخ انقضا', 'یاداوری']}
         data={supports.map((support) => ({
 

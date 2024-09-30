@@ -43,12 +43,15 @@ interface DomainFormData {
   expiry_date: string;
   reminder_date: string;
   purchase_type: 'ours' | 'customer';
-  reminder: '0' | '1'; // Active (0) or Inactive (1)
+  reminder: '0' | '1';
   price: number;
   associated_with: 'project' | 'user' | '';
   project_id: number | null;
   user_id: number | null;
   shouldCreateInvoice: boolean;
+  purchase_site_username?: string;
+  purchase_site_password?: string;
+  purchase_site_url?: string;
 }
 
 interface OptionType {
@@ -85,7 +88,7 @@ const DomainAdd: React.FC = () => {
       await api.post('/api/domains', data);
       showAlert('موفقیت', 'دامنه با موفقیت ایجاد شد.', 'success');
       reset();
-      navigate('/domains/list');
+      navigate('/admin/domains/list');
     } catch (error) {
       console.error('Error creating domain:', error);
       showAlert('خطا!', 'ایجاد دامنه با مشکل مواجه شد.', 'error');
@@ -141,7 +144,7 @@ const DomainAdd: React.FC = () => {
   };
 
   const associatedWith = watch('associated_with');
-
+  const purchaseType = watch('purchase_type');
   useEffect(() => {
     if (associatedWith === 'project') {
       setValue('user_id', null);
@@ -285,6 +288,45 @@ const DomainAdd: React.FC = () => {
                   isClearable
                 />
               </div>
+            )}
+
+
+            {/* Show extra fields when "customer" is selected */}
+            {purchaseType === 'customer' && (
+              <>
+                <div className="my-4.5">
+                  <label className="block mb-2.5 text-black dark:text-white">یوزرنیم</label>
+                  <input
+                    type="text"
+                    {...register('purchase_site_username', { required: 'یوزرنیم الزامی است.' })}
+                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.purchase_site_username ? 'border-red-500' : 'border-stroke'}`}
+                    placeholder="یوزرنیم"
+                  />
+                  {errors.purchase_site_username && <p className="text-danger text-3 mt-2.5">{errors.purchase_site_username.message}</p>}
+                </div>
+
+                <div className="my-4.5">
+                  <label className="block mb-2.5 text-black dark:text-white">پسورد</label>
+                  <input
+                    type="password"
+                    {...register('purchase_site_password', { required: 'پسورد الزامی است.' })}
+                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.purchase_site_password ? 'border-red-500' : 'border-stroke'}`}
+                    placeholder="پسورد"
+                  />
+                  {errors.purchase_site_password && <p className="text-danger text-3 mt-2.5">{errors.purchase_site_password.message}</p>}
+                </div>
+
+                <div className="my-4.5">
+                  <label className="block mb-2.5 text-black dark:text-white">آدرس سایت خریداری شده</label>
+                  <input
+                    type="text"
+                    {...register('purchase_site_url', { required: 'آدرس سایت الزامی است.' })}
+                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.purchase_site_url ? 'border-red-500' : 'border-stroke'}`}
+                    placeholder="آدرس سایت خریداری شده"
+                  />
+                  {errors.purchase_site_url && <p className="text-danger text-3 mt-2.5">{errors.purchase_site_url.message}</p>}
+                </div>
+              </>
             )}
 
             <div className="my-4.5">

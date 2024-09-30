@@ -1,38 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import CardDataStats from '../../components/CardDataStats';
-import ChartOne from '../../components/Charts/ChartOne';
-import ChartThree from '../../components/Charts/ChartThree';
-import ChartTwo from '../../components/Charts/ChartTwo';
+
 import NotficationCard from '../../components/Notfication/NotficationCard';
-import MapOne from '../../components/Maps/MapOne';
+;
 import TableOne from '../../components/Tables/TableOne';
 import api from '../../api/api';
 
 const ECommerce: React.FC = () => {
     const [stats, setStats] = useState<any>({});
-    const [chartData, setChartData] = useState<any>({});
-    const [tableData, setTableData] = useState<any>([]);
 
     useEffect(() => {
       // دریافت اطلاعات آماری
       api.get('/api/ecommerce/stats').then((response) => {
-        
+
         setStats(response.data);
       });
 
 
-
-      // دریافت اطلاعات جدول
-      api.get('/api/ecommerce/table-data').then((response) => {
-        setTableData(response.data);
-      });
     }, []);
 
 
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="همه ی فاکتور ها" total={stats.invoicesTotal || "$0"}>
+        <CardDataStats title="همه ی فاکتور ها" total={`${new Intl.NumberFormat().format(Number(stats.invoicesTotal))} تومان `}>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -51,7 +42,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats  title="کل درامد" total={stats.totalProfit || "$0"} >
+        <CardDataStats  title="کل درامد" total={`${new Intl.NumberFormat().format(Number(stats.totalProfit))} تومان `} >
           <svg
             className="fill-primary dark:fill-white"
             width="20"
@@ -74,7 +65,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="همه ی پروژه ها" total={stats.totalProducts || "0"} >
+        <CardDataStats title="همه ی پروژه ها" total={`${new Intl.NumberFormat().format(Number(stats.totalProducts))}  `} >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -93,7 +84,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="همه ی یوزر ها" total={stats.totalUsers || "0"} >
+        <CardDataStats title="همه ی یوزر ها" total={`${new Intl.NumberFormat().format(Number(stats.totalUsers))}  `} >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
