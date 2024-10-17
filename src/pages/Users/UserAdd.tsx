@@ -82,7 +82,7 @@ const UserAdd: React.FC = () => {
 
     const onSubmit = async (data: CreateUserFormData) => {
         try {
-            await api.post('/api/users', {
+            await api.post('/users', {
                 ...data,
                 role: data.role,
                 type: data.type,
@@ -124,7 +124,7 @@ const UserAdd: React.FC = () => {
                                 <label className="block mb-2.5 text-black dark:text-white">نام</label>
                                 <input
                                     type="text"
-                                    {...register('name', { required: 'نام الزامی است.' })}
+                                    {...register('name')}
                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.name ? 'border-red-500' : 'border-stroke'}`}
                                     placeholder="نام کاربر"
                                 />

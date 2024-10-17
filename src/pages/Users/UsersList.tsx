@@ -45,7 +45,7 @@ const UserList: React.FC = () => {
   const fetchUsers = useCallback(
     async (page = 1) => {
       try {
-        const response = await api.get(`/api/users?page=${page}`);
+        const response = await api.get(`/users?page=${page}`);
         if (response.data) {
           setUsers(response.data.data.data);
           setPageCount(response.data.data.last_page); // استفاده از تعداد صفحات صحیح
@@ -84,7 +84,7 @@ const UserList: React.FC = () => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            await api.delete(`/api/users/${userId}`);
+            await api.delete(`/users/${userId}`);
             setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
             showAlert('حذف شد!', 'کاربر با موفقیت حذف شد.', 'success');
           } catch (error) {

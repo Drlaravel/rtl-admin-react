@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-
+import React, { useState, useContext  } from 'react';
+import { AuthContext } from '../../auth/AuthContext';
 const DropdownMenu = ({ actions = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const authContext = useContext(AuthContext);
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -31,15 +31,17 @@ const DropdownMenu = ({ actions = [] }) => {
 
       {isOpen && (
         <div className="max-w-39.5 shadow-12 absolute right-0 z-1 w-full rounded-[5px] bg-white py-2.5 dark:bg-boxdark top-full mt-1">
-          {actions.map((action, index) => (
-            <button
-              key={index}
-              className={`flex w-full px-4 py-2 text-sm ${action.className} hover:bg-whiter hover:text-primary dark:hover:bg-meta-4`}
-              onClick={action.onClick}
-            >
-              {action.label}
-            </button>
-          ))}
+          {actions
+            .filter(action => authContext.user.role === 'admin' || action.label !== 'حذف')
+            .map((action, index) => (
+              <button
+                key={index}
+                className={`flex w-full px-4 py-2 text-sm ${action.className} hover:bg-whiter hover:text-primary dark:hover:bg-meta-4`}
+                onClick={action.onClick}
+              >
+                {action.label}
+              </button>
+            ))}
         </div>
       )}
     </div>

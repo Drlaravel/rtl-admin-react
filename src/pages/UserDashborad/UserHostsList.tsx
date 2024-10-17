@@ -46,7 +46,7 @@ const UserHostList: React.FC = () => {
   const fetchHosts = useCallback(
     async (page = 1) => {
       try {
-        const response = await api.get(`/api/user/hosts?page=${page}`);
+        const response = await api.get(`/user/hosts?page=${page}`);
         console.log(response.data)
 
           setHosts(response.data.data.data);

@@ -37,7 +37,7 @@ const UserProjectList: React.FC = () => {
 
   const fetchProjects = useCallback(async (page = 1) => {
     try {
-      const response = await api.get(`/api/user/projects?page=${page}`);
+      const response = await api.get(`/user/projects?page=${page}`);
         console.log(response.data.data.data)
         setProjects(response.data.data.data);
         setPageCount(response.data.data.last_page); // تنظیم تعداد صفحات صحیح

@@ -9,6 +9,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate, useParams } from 'react-router-dom';
+import FormattedNumberInput from "../../components/FormattedNumberInput"
 
 const MySwal = withReactContent(Swal);
 
@@ -126,7 +127,7 @@ const ProjectEdit: React.FC = () => {
     useEffect(() => {
         const fetchProjectData = async () => {
             try {
-                const response = await api.get(`/api/projects/${projectId}`);
+                const response = await api.get(`/projects/${projectId}`);
                 const projectData = response.data.data;
                 console.log(projectData)
                 // Setting values in the form
@@ -190,15 +191,15 @@ const ProjectEdit: React.FC = () => {
             setStep(prevStep => prevStep + 1);
         } else {
             try {
-                const response = await api.put(`/api/projects/${projectId}`, {
+                const response = await api.put(`/projects/${projectId}`, {
                     ...data,
                     start_date: startDate,
                     end_date: endDate,
                     payments: data.payments.map((payment, index) => ({
                         ...payment,
-                        payment_date: paymentDates[index]?? '',
+                        payment_date: paymentDates[index] ?? '',
                         due_date: dueDates[index] ?? '',
-                        expiry_date: expiryDates[index]?? '', // بررسی اینکه این مقدار به درستی تنظیم شده باشد
+                        expiry_date: expiryDates[index] ?? '', // بررسی اینکه این مقدار به درستی تنظیم شده باشد
                     })),
 
                     domains: data.domains.map((domain, index) => ({
@@ -263,7 +264,7 @@ const ProjectEdit: React.FC = () => {
                                     <div className="w-full ">
                                         <label className="mb-2.5 block text-black dark:text-white">وضعیت پروژه</label>
                                         <select
-                                            {...register('status', { required: 'وضعیت پروژه الزامی است.' })}
+                                            {...register('status', { required: ' وضعیت پروژه است.' })}
                                             className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.status ? 'border-red-500' : 'border-stroke'}`}
                                         >
                                             <option value="start">شروع</option>
@@ -282,7 +283,7 @@ const ProjectEdit: React.FC = () => {
                                         <label className="mb-2.5 block text-black dark:text-white">نام کارفرما</label>
                                         <input
                                             type="text"
-                                            {...register('employer', { required: 'نام کارفرما الزامی است.' })}
+                                            {...register('employer')}
                                             className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.employer ? 'border-red-500' : 'border-stroke'}`}
                                             placeholder="نام کارفرما را وارد کنید"
                                         />
@@ -365,7 +366,7 @@ const ProjectEdit: React.FC = () => {
                                 <div className="w-full">
                                     <label className="mb-2.5 block text-black dark:text-white">نوع مشتری</label>
                                     <select
-                                        {...register('client_type', { required: 'نوع مشتری الزامی است.' })}
+                                        {...register('client_type')}
                                         className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.client_type ? 'border-red-500' : 'border-stroke'}`}
                                     >
                                         <option value="individual">حقیقی</option>
@@ -389,21 +390,21 @@ const ProjectEdit: React.FC = () => {
                                     </div>
                                 )}
                                 <div className="my-4.5 grid md:grid-cols-2 gap-6">
-                                    <div className="w-full">
-                                        <label className="mb-2.5 block text-black dark:text-white">هزینه ی پروژه</label>
-                                        <input
-                                            type="text"
-                                            {...register('price', { required: 'مبلغ پروژه الزامی است.', minLength: { value: 6, message: 'مبلغ را به درستی وارد کنید' } })}
-                                            className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.price ? 'border-red-500' : 'border-stroke'}`}
-                                            placeholder="مبلغ پروژه را وارد کنید"
-                                        />
-                                        {errors.price && <p className="text-danger text-3 mt-2.5">{errors.price.message}</p>}
-                                    </div>
+                                    <FormattedNumberInput
+                                        register={register}
+                                        setValue={setValue}
+                                        name="price"
+                                        label="هزینه‌ی پروژه"
+                                        placeholder="مبلغ پروژه را وارد کنید"
+                                        errors={errors}
+                                        defaultValue={watch('price')}
+                                    />
+
 
                                     <div className="w-full">
                                         <label className="mb-2.5 block text-black dark:text-white">نوع مشتری را انتخاب کنید</label>
                                         <select
-                                            {...register('type', { required: 'نوع مشتری الزامی است.' })}
+                                            {...register('type')}
                                             className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.client_type ? 'border-red-500' : 'border-stroke'}`}
                                         >
                                             <option selected value="bronze">برنزی</option>
@@ -417,7 +418,7 @@ const ProjectEdit: React.FC = () => {
                             </>
                         )}
 
-                        { step === 2 && (
+                        {step === 2 && (
                             <>
                                 {/* پرداخت‌ها */}
                                 <section className="my-5">
@@ -436,16 +437,17 @@ const ProjectEdit: React.FC = () => {
                                                     {errors.payments?.[index]?.title && <p className="text-danger text-3 mt-2.5">{errors.payments[index].title.message}</p>}
                                                 </div>
 
-                                                <div className="mb-4.5">
-                                                    <label className="mb-2.5 block text-black dark:text-white">مبلغ پرداخت شده</label>
-                                                    <input
-                                                        type="number"
-                                                        {...register(`payments.${index}.amount`, { required: 'مبلغ پرداخت شده الزامی است.', valueAsNumber: true })}
-                                                        className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.amount ? 'border-red-500' : 'border-stroke'}`}
-                                                        placeholder="مبلغ پرداخت را وارد کنید"
-                                                    />
-                                                    {errors.payments?.[index]?.amount && <p className="text-danger text-3 mt-2.5">{errors.payments[index].amount.message}</p>}
-                                                </div>
+                                                <FormattedNumberInput
+                                                    register={register}
+                                                    setValue={setValue}
+                                                    name={`payments.${index}.amount`}
+                                                    label="مقدار پرداخت"
+                                                    errors={errors}
+                                                    placeholder="مقدار پرداخت را وارد کنید"
+                                                    validation={{ required: 'مقدار پرداخت الزامی است.' }} // قوانین اعتبارسنجی
+                                                    className="my-4"
+                                                    defaultValue={watch(`payments.${index}.amount`)}
+                                                />
 
                                                 <div className="mb-4.5">
                                                     <label className="mb-2.5 block text-black dark:text-white">وضعیت پرداخت</label>
@@ -454,8 +456,8 @@ const ProjectEdit: React.FC = () => {
                                                             required: "وضعیت پرداخت الزامی است.",
                                                         })}
                                                         className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.status
-                                                                ? "border-red-500"
-                                                                : "border-stroke"
+                                                            ? "border-red-500"
+                                                            : "border-stroke"
                                                             }`}
                                                     >
                                                         <option value="paid">پرداخت شده</option>
@@ -481,8 +483,8 @@ const ProjectEdit: React.FC = () => {
                                                             locale={persian_fa}
                                                             calendarPosition="bottom-right"
                                                             inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.date
-                                                                    ? "border-red-500"
-                                                                    : "border-stroke"
+                                                                ? "border-red-500"
+                                                                : "border-stroke"
                                                                 }`}
                                                             containerStyle={{ width: "100%" }}
                                                             value={paymentDates[index]}
@@ -512,8 +514,8 @@ const ProjectEdit: React.FC = () => {
                                                             locale={persian_fa}
                                                             calendarPosition="bottom-right"
                                                             inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.due_date
-                                                                    ? "border-red-500"
-                                                                    : "border-stroke"
+                                                                ? "border-red-500"
+                                                                : "border-stroke"
                                                                 }`}
                                                             containerStyle={{ width: "100%" }}
                                                             value={dueDates[index]}
@@ -543,8 +545,8 @@ const ProjectEdit: React.FC = () => {
                                                             locale={persian_fa}
                                                             calendarPosition="bottom-right"
                                                             inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payments?.[index]?.expiry_date
-                                                                    ? "border-red-500"
-                                                                    : "border-stroke"
+                                                                ? "border-red-500"
+                                                                : "border-stroke"
                                                                 }`}
                                                             containerStyle={{ width: "100%" }}
                                                             value={expiryDates[index]}
@@ -602,7 +604,7 @@ const ProjectEdit: React.FC = () => {
                                                         <label className="mb-2.5 block text-black dark:text-white">نام دامنه</label>
                                                         <input
                                                             type="text"
-                                                            {...register(`domains.${index}.name`, { required: 'نام دامنه الزامی است.' })}
+                                                            {...register(`domains.${index}.name`)}
                                                             className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.name ? 'border-red-500' : 'border-stroke'}`}
                                                             placeholder="نام دامنه را وارد کنید"
                                                         />
@@ -612,7 +614,7 @@ const ProjectEdit: React.FC = () => {
                                                     <div className="mb-4.5">
                                                         <label className="mb-2.5 block text-black dark:text-white">نوع خرید دامنه</label>
                                                         <select
-                                                            {...register(`domains.${index}.purchase_type`, { required: 'نوع خرید دامنه الزامی است.' })}
+                                                            {...register(`domains.${index}.purchase_type`)}
                                                             className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.purchase_type ? 'border-red-500' : 'border-stroke'}`}
                                                         >
                                                             <option value="ours">خریداری شده توسط ما</option>
@@ -628,7 +630,7 @@ const ProjectEdit: React.FC = () => {
                                                                 <label className="mb-2.5 block text-black dark:text-white">یوزرنیم</label>
                                                                 <input
                                                                     type="text"
-                                                                    {...register(`domains.${index}.purchase_site_username`, { required: 'یوزرنیم الزامی است.' })}
+                                                                    {...register(`domains.${index}.purchase_site_username`)}
                                                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.purchase_site_username ? 'border-red-500' : 'border-stroke'}`}
                                                                     placeholder="یوزرنیم را وارد کنید"
                                                                 />
@@ -639,7 +641,7 @@ const ProjectEdit: React.FC = () => {
                                                                 <label className="mb-2.5 block text-black dark:text-white">پسورد</label>
                                                                 <input
                                                                     type="password"
-                                                                    {...register(`domains.${index}.purchase_site_password`, { required: 'پسورد الزامی است.' })}
+                                                                    {...register(`domains.${index}.purchase_site_password`)}
                                                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.purchase_site_password ? 'border-red-500' : 'border-stroke'}`}
                                                                     placeholder="پسورد را وارد کنید"
                                                                 />
@@ -650,7 +652,7 @@ const ProjectEdit: React.FC = () => {
                                                                 <label className="mb-2.5 block text-black dark:text-white">آدرس سایت خریداری شده</label>
                                                                 <input
                                                                     type="text"
-                                                                    {...register(`domains.${index}.purchase_site_url`, { required: 'آدرس سایت الزامی است.' })}
+                                                                    {...register(`domains.${index}.purchase_site_url`)}
                                                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.domains?.[index]?.purchase_site_url ? 'border-red-500' : 'border-stroke'}`}
                                                                     placeholder="آدرس سایت خریداری شده را وارد کنید"
                                                                 />
@@ -724,7 +726,7 @@ const ProjectEdit: React.FC = () => {
                                     <div className="mb-4.5">
                                         <label className="mb-2.5 block text-black dark:text-white">نوع خرید هاست</label>
                                         <select
-                                            {...register('host.purchase_type', { required: 'نوع خرید هاست الزامی است.' })}
+                                            {...register('host.purchase_type')}
                                             className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.host?.purchase_type ? 'border-red-500' : 'border-stroke'}`}
                                         >
                                             <option value="ours">خریداری شده توسط ما</option>
@@ -740,7 +742,7 @@ const ProjectEdit: React.FC = () => {
                                                 <label className="mb-2.5 block text-black dark:text-white">نام کاربری</label>
                                                 <input
                                                     type="text"
-                                                    {...register('host.username', { required: 'نام کاربری الزامی است.' })}
+                                                    {...register('host.username')}
                                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.host?.username ? 'border-red-500' : 'border-stroke'}`}
                                                     placeholder="نام کاربری هاست را وارد کنید"
                                                 />
@@ -751,7 +753,7 @@ const ProjectEdit: React.FC = () => {
                                                 <label className="mb-2.5 block text-black dark:text-white">پسورد</label>
                                                 <input
                                                     type="password"
-                                                    {...register('host.password', { required: 'پسورد هاست الزامی است.' })}
+                                                    {...register('host.password')}
                                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.host?.password ? 'border-red-500' : 'border-stroke'}`}
                                                     placeholder="پسورد هاست را وارد کنید"
                                                 />
@@ -762,7 +764,7 @@ const ProjectEdit: React.FC = () => {
                                                 <label className="mb-2.5 block text-black dark:text-white">لینک هاست</label>
                                                 <input
                                                     type="text"
-                                                    {...register('host.link', { required: 'لینک هاست الزامی است.' })}
+                                                    {...register('host.link')}
                                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.host?.link ? 'border-red-500' : 'border-stroke'}`}
                                                     placeholder="لینک هاست را وارد کنید"
                                                 />
@@ -808,7 +810,7 @@ const ProjectEdit: React.FC = () => {
                                                 <label className="mb-2.5 block text-black dark:text-white">نام کاربری</label>
                                                 <input
                                                     type="text"
-                                                    {...register('host.username', { required: 'نام کاربری الزامی است.' })}
+                                                    {...register('host.username')}
                                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.host?.username ? 'border-red-500' : 'border-stroke'}`}
                                                     placeholder="نام کاربری هاست را وارد کنید"
                                                 />
@@ -819,7 +821,7 @@ const ProjectEdit: React.FC = () => {
                                                 <label className="mb-2.5 block text-black dark:text-white">پسورد</label>
                                                 <input
                                                     type="password"
-                                                    {...register('host.password', { required: 'پسورد هاست الزامی است.' })}
+                                                    {...register('host.password')}
                                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.host?.password ? 'border-red-500' : 'border-stroke'}`}
                                                     placeholder="پسورد هاست را وارد کنید"
                                                 />
@@ -830,7 +832,7 @@ const ProjectEdit: React.FC = () => {
                                                 <label className="mb-2.5 block text-black dark:text-white">لینک هاست</label>
                                                 <input
                                                     type="text"
-                                                    {...register('host.link', { required: 'لینک هاست الزامی است.' })}
+                                                    {...register('host.link')}
                                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.host?.link ? 'border-red-500' : 'border-stroke'}`}
                                                     placeholder="لینک هاست را وارد کنید"
                                                 />
@@ -870,29 +872,30 @@ const ProjectEdit: React.FC = () => {
                                                 <label className="mb-2.5 block text-black dark:text-white">فضای هاست</label>
                                                 <input
                                                     type="text"
-                                                    {...register('host.space', { required: 'فضای هاست الزامی است.' })}
+                                                    {...register('host.space')}
                                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.host?.space ? 'border-red-500' : 'border-stroke'}`}
                                                     placeholder="فضای هاست را وارد کنید"
                                                 />
                                                 {errors.host?.space && <p className="text-danger text-3 mt-2.5">{errors.host.space.message}</p>}
                                             </div>
 
-                                            <div className="mb-4.5">
-                                                <label className="mb-2.5 block text-black dark:text-white">قیمت هاست</label>
-                                                <input
-                                                    type="number"
-                                                    {...register('host.price', { required: 'قیمت هاست الزامی است.', valueAsNumber: true })}
-                                                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.host?.price ? 'border-red-500' : 'border-stroke'}`}
-                                                    placeholder="قیمت هاست را وارد کنید"
-                                                />
-                                                {errors.host?.price && <p className="text-danger text-3 mt-2.5">{errors.host.price.message}</p>}
-                                            </div>
+                                            <FormattedNumberInput
+                                                register={register}
+                                                setValue={setValue}
+                                                 label="قیمت هاست"
+                                                name="host.price"  // نام فیلد
+                                                placeholder="قیمت هاست را وارد کنید"
+                                                errors={errors}
+                                                validation={{ required: 'قیمت هاست الزامی است.', valueAsNumber: true }}  // اعتبارسنجی
+                                                className={`my-5`}
+                                                defaultValue={watch('host.price')}  // مقدار اولیه
+                                            />
 
                                             <div className="mb-4.5">
                                                 <label className="mb-2.5 block text-black dark:text-white">نام شرکت میزبان</label>
                                                 <input
                                                     type="text"
-                                                    {...register('host.company_name', { required: 'نام شرکت میزبان الزامی است.' })}
+                                                    {...register('host.company_name')}
                                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.host?.company_name ? 'border-red-500' : 'border-stroke'}`}
                                                     placeholder="نام شرکت میزبان را وارد کنید"
                                                 />
@@ -914,7 +917,7 @@ const ProjectEdit: React.FC = () => {
                                     <div className="mb-4.5">
                                         <label className="mb-2.5 block text-black dark:text-white">پشتیبانی دارد؟</label>
                                         <select
-                                            {...register('support.status', { required: 'وضعیت پشتیبانی الزامی است.' })}
+                                            {...register('support.status')}
                                             className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.support?.status ? 'border-red-500' : 'border-stroke'}`}
                                         >
                                             <option value="no">خیر</option>
@@ -929,7 +932,7 @@ const ProjectEdit: React.FC = () => {
                                             <div className="mb-4.5">
                                                 <label className="mb-2.5 block text-black dark:text-white">مدت زمان پشتیبانی</label>
                                                 <select
-                                                    {...register('support.duration', { required: 'مدت زمان پشتیبانی الزامی است.' })}
+                                                    {...register('support.duration')}
                                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.support?.duration ? 'border-red-500' : 'border-stroke'}`}
                                                 >
                                                     <option value="">مدت زمان را انتخاب کنید</option>
@@ -941,29 +944,29 @@ const ProjectEdit: React.FC = () => {
 
                                             {/* فیلد هزینه پشتیبانی بر اساس مدت زمان */}
                                             {watch('support.duration') === '6months' && (
-                                                <div className="mb-4.5">
-                                                    <label className="mb-2.5 block text-black dark:text-white">هزینه پشتیبانی ۶ ماهه</label>
-                                                    <input
-                                                        type="number"
-                                                        {...register('support.price', { required: 'هزینه پشتیبانی ۶ ماهه الزامی است.', valueAsNumber: true })}
-                                                        className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.support?.price ? 'border-red-500' : 'border-stroke'}`}
-                                                        placeholder="هزینه پشتیبانی ۶ ماهه را وارد کنید"
-                                                    />
-                                                    {errors.support?.price && <p className="text-danger text-3 mt-2.5">{errors.support.price.message}</p>}
-                                                </div>
+                                                <FormattedNumberInput
+                                                    register={register}
+                                                    setValue={setValue}
+                                                    name="support.price"
+                                                    label="هزینه پشتیبانی ۶ ماهه"
+                                                    errors={errors}
+                                                    placeholder="هزینه پشتیبانی ۶ ماهه را وارد کنید"
+                                                    validation={{ required: 'هزینه پشتیبانی ۶ ماهه الزامی است.' }}
+                                                    defaultValue={watch('support.price')}
+                                                />
                                             )}
 
                                             {watch('support.duration') === '12months' && (
-                                                <div className="mb-4.5">
-                                                    <label className="mb-2.5 block text-black dark:text-white">هزینه پشتیبانی ۱۲ ماهه</label>
-                                                    <input
-                                                        type="number"
-                                                        {...register('support.price', { required: 'هزینه پشتیبانی ۱۲ ماهه الزامی است.', valueAsNumber: true })}
-                                                        className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.support?.price ? 'border-red-500' : 'border-stroke'}`}
-                                                        placeholder="هزینه پشتیبانی ۱۲ ماهه را وارد کنید"
-                                                    />
-                                                    {errors.support?.price && <p className="text-danger text-3 mt-2.5">{errors.support.price.message}</p>}
-                                                </div>
+                                                <FormattedNumberInput
+                                                    register={register}
+                                                    setValue={setValue}
+                                                    name="support.price"
+                                                    label="هزینه پشتیبانی ۱۲ ماهه"
+                                                    errors={errors}
+                                                    placeholder="هزینه پشتیبانی ۱۲ ماهه را وارد کنید"
+                                                    validation={{ required: 'هزینه پشتیبانی ۱۲ ماهه الزامی است.' }}
+                                                    defaultValue={watch('support.price')}
+                                                />
                                             )}
                                         </>
                                     )}

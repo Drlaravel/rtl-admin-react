@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
 import Select, { StylesConfig } from 'react-select';
+import FormattedNumberInput from "../../components/FormattedNumberInput"
 
 const MySwal = withReactContent(Swal);
 
@@ -87,12 +88,12 @@ const SupportAdd: React.FC = () => {
     };
 
     try {
-      await api.post(`/api/supports`, requestData);
+      await api.post(`/supports`, requestData);
       showAlert('موفقیت', 'پشتیبانی با موفقیت ایجاد شد.', 'success');
       navigate('/admin/supports/list');
     } catch (error) {
       console.error('Error creating support:', error);
-      showAlert('خطا!', 'ایجاد پشتیبانی با مشکل مواجه شد.', 'error');
+      showAlert('خطا!', 'ایجاد پشتیبانی  با مشکل مواجه شد از تکراری نبود اطلاعات مطمئن شوید.', 'error');
     }
   };
 
@@ -100,8 +101,8 @@ const SupportAdd: React.FC = () => {
     const fetchAllData = async () => {
       try {
         const [usersResponse, projectsResponse] = await Promise.all([
-          api.get('/api/all-users'),
-          api.get('/api/all-projects'),
+          api.get('/all-users'),
+          api.get('/all-projects'),
         ]);
 
         const usersData = usersResponse.data.map((user: any) => ({
@@ -149,7 +150,7 @@ const SupportAdd: React.FC = () => {
               <label className="block mb-2.5 text-black dark:text-white">نام پشتیبانی</label>
               <input
                 type="text"
-                {...register('name', { required: 'نام پشتیبانی الزامی است.' })}
+                {...register('name', { required: 'نام پروژه الزامی است.' })}
                 className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.name ? 'border-red-500' : 'border-stroke'}`}
                 placeholder="نام پشتیبانی"
               />
@@ -162,7 +163,7 @@ const SupportAdd: React.FC = () => {
               <div className="my-4.5">
                 <label className="block mb-2.5 text-black dark:text-white">مدت زمان</label>
                 <select
-                  {...register('duration', { required: 'مدت زمان الزامی است.' })}
+                  {...register('duration')}
                   className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.duration ? 'border-red-500' : 'border-stroke'}`}
                 >
                   <option value="6months">6 ماه</option>
@@ -186,20 +187,22 @@ const SupportAdd: React.FC = () => {
             </div>
 
             <div className="my-4.5 grid md:grid-cols-2 gap-6">
-              <div className="my-4.5">
-                <label className="block mb-2.5 text-black dark:text-white">قیمت</label>
-                <input
-                  type="text"
-                  {...register('price', { required: 'قیمت الزامی است.', valueAsNumber: true })}
-                  className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.price ? 'border-red-500' : 'border-stroke'}`}
-                  placeholder="قیمت"
-                />
-                {errors.price && <p className="text-danger text-3 mt-2.5">{errors.price.message}</p>}
-              </div>
+             
+            <FormattedNumberInput
+                register={register}
+                setValue={setValue}
+                label={'هزینه پشتیبانی'}
+                name="price"  // نام فیلد
+                placeholder="هزینه پشتیبانی"
+                errors={errors}
+                validation={{ required: 'هزینه پشتیبانی الزامی است.', valueAsNumber: true }}  // اعتبارسنجی
+                className={`my-5`}
+                
+              />
               <div className="my-4.5">
                 <label className="block mb-2.5 text-black dark:text-white">وضعیت</label>
                 <select
-                  {...register('status', { required: 'وضعیت الزامی است.' })}
+                  {...register('status')}
                   className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.status ? 'border-red-500' : 'border-stroke'}`}
                 >
                   <option value="yes">فعال</option>
@@ -212,7 +215,7 @@ const SupportAdd: React.FC = () => {
             <div className="my-4.5">
               <label className="block mb-2.5 text-black dark:text-white">اضافه کردن به:</label>
               <select
-                {...register('associated_with', { required: 'این فیلد الزامی است.' })}
+                {...register('associated_with')}
                 className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black dark:border-form-strokedark dark:bg-form-input dark:text-white`}
               >
                 <option value="">انتخاب کنید</option>

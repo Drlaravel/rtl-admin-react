@@ -32,6 +32,7 @@ const TableComponent = <T,>({ headers, data, renderActions }: TableComponentProp
             <div key={rowIndex} className={`grid ${columnCountClass} justify-items-center border-t border-[#EEEEEE] px-5 py-4 dark:border-strokedark lg:px-7.5 2xl:px-11`}>
               {Object.values(item).map((field, colIndex) => (
                 <div key={colIndex} className="col">
+                  
                   <p className="text-[#637381] dark:text-bodydark">{field}</p>
                 </div>
               ))}

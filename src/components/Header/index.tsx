@@ -93,28 +93,28 @@ const Header = (props: {
           </form> */}
                     <div className="flex flex-wrap items-center rounded-lg">
 
-                        <NavLink to="/domains/list" className="inline-flex items-center gap-2.5 rounded-r-lg border border-stroke py-1 px-2 font-medium text-black hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:py-3 sm:px-6">
+                        <NavLink to="/admin/domains/list" className="inline-flex items-center gap-2.5 rounded-r-lg border border-stroke py-1 px-2 font-medium text-black hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:py-3 sm:px-6">
 
                             دامنه ها
                         </NavLink>
 
 
-                        <NavLink to="/hosts/list" className="inline-flex items-center gap-2.5 border-y border-stroke py-1 px-2 font-medium text-black hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:py-3 sm:px-6">
+                        <NavLink to="/admin/hosts/list" className="inline-flex items-center gap-2.5 border-y border-stroke py-1 px-2 font-medium text-black hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:py-3 sm:px-6">
 
                             هاست ها
                         </NavLink>
 
-                        <NavLink to="/supports/list" className="inline-flex items-center gap-2.5 border-y border-stroke py-1 px-2 font-medium text-black hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:py-3 sm:px-6">
+                        <NavLink to="/admin/supports/list" className="inline-flex items-center gap-2.5 border-y border-stroke py-1 px-2 font-medium text-black hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:py-3 sm:px-6">
 
                             پشتیبانی ها
                         </NavLink>
 
-                        <NavLink to="/invoices/list" className="inline-flex items-center gap-2.5 border-y border-stroke py-1 px-2 font-medium text-black hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:py-3 sm:px-6">
+                        <NavLink to="/admin/invoices/list" className="inline-flex items-center gap-2.5 border-y border-stroke py-1 px-2 font-medium text-black hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:py-3 sm:px-6">
 
                             فاکتور ها
                         </NavLink>
 
-                        <NavLink to="/projects/list" className="inline-flex items-center gap-2.5 rounded-l-lg border border-primary bg-primary py-1 px-2 font-medium text-white hover:border-primary hover:bg-primary hover:text-white dark:hover:border-primary sm:py-3 sm:px-6">
+                        <NavLink to="/admin/projects/list" className="inline-flex items-center gap-2.5 rounded-l-lg border border-primary bg-primary py-1 px-2 font-medium text-white hover:border-primary hover:bg-primary hover:text-white dark:hover:border-primary sm:py-3 sm:px-6">
 
                             پروژه ها
                         </NavLink>

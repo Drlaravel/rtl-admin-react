@@ -10,7 +10,7 @@ const AdminRoute: React.FC = () => {
   }
 
   // بررسی نقش کاربر
-  return authContext.user.role === 'admin' ? (
+  return authContext.user.role === 'admin' || authContext.user.role === 'editor'  ? (
     <Outlet />
   ) : (
     <Navigate to="/auth/signin" />

@@ -27,8 +27,8 @@ const SmsAdd: React.FC = () => {
     const fetchData = async () => {
       try {
         const [usersResponse, projectsResponse] = await Promise.all([
-            api.get('/api/sms/users'),
-            api.get('/api/sms/projects'),
+            api.get('/sms/users'),
+            api.get('/sms/projects'),
         ]);
 
         setUsers(usersResponse.data.data);
@@ -76,7 +76,7 @@ const SmsAdd: React.FC = () => {
       }
 
       try {
-        await api.post('/api/sms/send', data);
+        await api.post('/sms/send', data);
         MySwal.fire('موفقیت', 'پیامک با موفقیت ارسال شد.', 'success');
         navigate('/admin/sms/logs'); // Redirect to SMS logs or any desired route
       } catch (error) {

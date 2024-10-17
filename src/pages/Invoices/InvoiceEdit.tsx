@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate, useParams } from 'react-router-dom';
 import Select, { StylesConfig } from 'react-select';
+import FormattedNumberInput from "../../components/FormattedNumberInput"
 
 const MySwal = withReactContent(Swal);
 
@@ -87,7 +88,7 @@ const InvoiceEdit: React.FC = () => {
 
     const onSubmit = async (data: InvoiceFormData) => {
         try {
-            await api.put(`/api/payments/${id}`, data);
+            await api.put(`/payments/${id}`, data);
             showAlert('موفقیت', 'فاکتور با موفقیت ویرایش شد.', 'success');
             navigate('/admin/invoices/list');
         } catch (error) {
@@ -100,10 +101,10 @@ const InvoiceEdit: React.FC = () => {
         const fetchAllData = async () => {
             try {
                 const [projectsResponse, hostsResponse, domainsResponse, supportsResponse] = await Promise.all([
-                    api.get('/api/all-projects'),
-                    api.get('/api/hosts'),
-                    api.get('/api/domains'),
-                    api.get('/api/supports'),
+                    api.get('/all-projects'),
+                    api.get('/hosts'),
+                    api.get('/domains'),
+                    api.get('/supports'),
                 ]);
 
                 setProjects(projectsResponse.data.map((project: any) => ({ value: project.id, label: project.name })));
@@ -118,7 +119,7 @@ const InvoiceEdit: React.FC = () => {
 
         const fetchInvoice = async () => {
             try {
-                const response = await api.get(`/api/payments/${id}`);
+                const response = await api.get(`/payments/${id}`);
                 const invoiceData = response.data.data;
                 console.log(invoiceData)
                 setValue('amount', invoiceData.amount);
@@ -181,16 +182,18 @@ const InvoiceEdit: React.FC = () => {
                                 {errors.title && <p className="text-danger text-3 mt-2.5">{errors.title.message}</p>}
                             </div>
 
-                            <div className="my-4.5">
-                                <label className="block mb-2.5 text-black dark:text-white">مبلغ</label>
-                                <input
-                                    type="number"
-                                    {...register('amount', { required: 'مبلغ الزامی است.', min: 1 })}
-                                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.amount ? 'border-red-500' : 'border-stroke'}`}
-                                    placeholder="مبلغ فاکتور"
-                                />
-                                {errors.amount && <p className="text-danger text-3 mt-2.5">{errors.amount.message}</p>}
-                            </div>
+                           
+                            <FormattedNumberInput
+                            register={register}
+                            setValue={setValue}
+                            label={'مبلغ فاکتور'}
+                            name="amount"  // نام فیلد
+                            placeholder="مبلغ فاکتور"
+                            errors={errors}
+                            validation={{ required: 'مبلغ فاکتور الزامی است.', valueAsNumber: true }}  // اعتبارسنجی
+                            className={`my-5`}
+                            defaultValue={watch('amount')}
+                        />
                         </div>
 
                         {/* تاریخ‌ها */}
@@ -217,7 +220,7 @@ const InvoiceEdit: React.FC = () => {
                                     placeholder="تاریخ مهلت"
                                     locale={persian_fa}
                                     value={dueDate} // Set initial value from state
-                                    onChange={(date) => setDueDate(date?.format() || '')}
+                                    onChange={(due_date) => setDueDate(due_date?.format() || '')}
                                     inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.due_date ? 'border-red-500' : 'border-stroke'}`}
                                     containerStyle={{ width: '100%' }}
                                 />
@@ -230,12 +233,12 @@ const InvoiceEdit: React.FC = () => {
                                     calendar={persian}
                                     placeholder="تاریخ انقضا"
                                     locale={persian_fa}
-                                    value={dueDate} // Set initial value from state
-                                    onChange={(date) => setExpiryDate(date?.format() || '')}
+                                    value={expiryDate} // Set initial value from state
+                                    onChange={(expiry_date) => setExpiryDate(expiry_date?.format() || '')}
                                     inputClass={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.due_date ? 'border-red-500' : 'border-stroke'}`}
                                     containerStyle={{ width: '100%' }}
                                 />
-                                {errors.expiryDate && <p className="text-danger text-3 mt-2.5">{errors.expiryDate.message}</p>}
+                                {errors.expiry_date && <p className="text-danger text-3 mt-2.5">{errors.expiry_date.message}</p>}
                             </div>
                         </div>
 
@@ -244,7 +247,7 @@ const InvoiceEdit: React.FC = () => {
                             <div className="my-4.5">
                                 <label className="block mb-2.5 text-black dark:text-white">وضعیت پرداخت</label>
                                 <select
-                                    {...register('status', { required: 'وضعیت پرداخت الزامی است.' })}
+                                    {...register('status')}
                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.status ? 'border-red-500' : 'border-stroke'}`}
                                 >
                                     <option value="paid">پرداخت شده</option>
@@ -257,7 +260,7 @@ const InvoiceEdit: React.FC = () => {
                             <div className="my-4.5">
                                 <label className="block mb-2.5 text-black dark:text-white">نوع پرداخت</label>
                                 <select
-                                    {...register('payment_type', { required: 'نوع پرداخت الزامی است.' })}
+                                    {...register('payment_type')}
                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payment_type ? 'border-red-500' : 'border-stroke'}`}
                                 >
                                     <option value="cash">نقدی</option>
@@ -272,7 +275,7 @@ const InvoiceEdit: React.FC = () => {
                         <div className="my-4.5">
                             <label className="block mb-2.5 text-black dark:text-white">انتخاب نوع آیتم</label>
                             <select
-                                {...register('item_type', { required: 'نوع آیتم الزامی است.' })}
+                                {...register('item_type')}
                                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white"
                             >
                                 <option value="project">پروژه</option>

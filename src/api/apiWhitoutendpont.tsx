@@ -1,9 +1,9 @@
 
 import axios from 'axios';
-import API from './apiConfig';
+import API  from './apiConfig';
 
-const api = axios.create({
-    baseURL: API.API_BASE_URL,
+const apiWhitoutendpont = axios.create({
+    baseURL: API.API_BASE_URI,
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -11,7 +11,7 @@ const api = axios.create({
 });
 
 
-api.interceptors.request.use(
+apiWhitoutendpont.interceptors.request.use(
     (config) => {
       const token = localStorage.getItem('authToken');
       if (token) {
@@ -27,7 +27,7 @@ api.interceptors.request.use(
 );
 
 // افزودن اینترسپتور برای پاسخ‌ها جهت مدیریت خطاها
-api.interceptors.response.use(
+apiWhitoutendpont.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
@@ -39,4 +39,4 @@ api.interceptors.response.use(
     }
 );
 
-export default api;
+export default apiWhitoutendpont;

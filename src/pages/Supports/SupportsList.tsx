@@ -48,7 +48,7 @@ const SupportList: React.FC = () => {
   const fetchSupports = useCallback(
     async (page = 1) => {
       try {
-        const response = await api.get(`/api/supports?page=${page}`);
+        const response = await api.get(`/supports?page=${page}`);
         console.log(response.data); // بررسی داده‌های دریافتی
         if (response.data && Array.isArray(response.data.data)) {
           setSupports(response.data.data);
@@ -88,7 +88,7 @@ const SupportList: React.FC = () => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            await api.delete(`/api/supports/${supportId}`);
+            await api.delete(`/supports/${supportId}`);
             setSupports((prevSupports) => prevSupports.filter((support) => support.id !== supportId));
             showAlert('حذف شد!', 'پشتیبانی با موفقیت حذف شد.', 'success');
           } catch (error) {
@@ -146,7 +146,7 @@ const SupportList: React.FC = () => {
           duration: support.duration === '6months' ? '6 ماه' : '12 ماه',
           price: support.price ? `${new Intl.NumberFormat().format(support.price)} تومان` : 'رایگان',
           expiry_date: support.expiry_date ? support.expiry_date : 'نامشخص',
-          reminder: support.reminder ? 'فعال' : 'غیرفعال',
+          reminder: support.reminder ? 'غیرفعال'  : 'فعال',
         }))}
         
         renderActions={(support) => (

@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import ClickOutside from '../ClickOutside';
+import ClickOutside from '../../components/ClickOutside';
 import api from '../../api/api';
 
 
 
-const NotficationCard = () => {
+const UserNotficationCard = () => {
 
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -72,4 +72,4 @@ const NotficationCard = () => {
     );
 };
 
-export default NotficationCard;
+export default UserNotficationCard;

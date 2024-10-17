@@ -7,9 +7,9 @@ import api from '../../api/api';
 import { NavLink, useNavigate } from 'react-router-dom';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import Pagination from '../../components/Pagination/Pagination';
-
+import { Link } from 'react-router-dom';
 const MySwal = withReactContent(Swal);
-
+import ZarinpalPayment from '../../payments/ZarinpalPayment';
 interface Invoice {
     id: number;
     title: string;
@@ -21,6 +21,11 @@ interface Invoice {
     project_name: string | null;
     domain_name: string | null;
     support_name: string | null;
+    name: string | null;
+    support: object | null;
+    domain: object | null;
+    project: object | null;
+    host: object | null;
 }
 
 const UserInvoiceList: React.FC = () => {
@@ -46,8 +51,8 @@ const UserInvoiceList: React.FC = () => {
     const fetchInvoices = useCallback(
         async (page = 1) => {
             try {
-                const response = await api.get(`/api/user/invoices?page=${page}`);
-                console.log(response)
+                const response = await api.get(`/user/invoices?page=${page}`);
+                console.log(response.data.invoices)
                 setInvoices(response.data.invoices);
                 // setPageCount(response.data.data.last_page);
 
@@ -72,6 +77,18 @@ const UserInvoiceList: React.FC = () => {
     if (loading) {
         return <p>در حال بارگذاری...</p>;
     }
+
+    const getStatusDisplay = (invoice) => {
+        if (invoice.status === 'pending') {
+
+            return <ZarinpalPayment paymentId={invoice.id} />;
+
+        } else if (invoice.status === 'paid') {
+            return <span className="text-green-600">پرداخت شده</span>;
+        } else {
+            return <span className="text-red-600">رد شده</span>;
+        }
+    };
 
     return (
         <div className="invoice-list">
@@ -100,11 +117,14 @@ const UserInvoiceList: React.FC = () => {
 
                     title: invoice.title,
                     amount: `${new Intl.NumberFormat().format(Number(invoice.amount))} تومان`,
-                    status: invoice.status === 'paid' ? 'پرداخت شده' : invoice.status === 'pending' ? 'در انتظار' : 'رد شده',
+                    status: getStatusDisplay(invoice),
                     payment_type: invoice.payment_type === 'cash' ? 'نقدی' : invoice.payment_type === 'check' ? 'چک' : 'قسطی',
                     due_date: invoice.due_date || 'نامشخص',
-                    project_domain_support: invoice.project_name || invoice.domain_name || invoice.support_name || 'بدون نام',
-                }))}
+        projectDomainSupport: invoice.project?.name
+            ?? invoice.domain?.name
+            ?? invoice.support?.name
+            ?? 'بدون نام'
+    }))}
             />
 
             {/* Pagination */}

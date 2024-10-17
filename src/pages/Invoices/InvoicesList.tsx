@@ -55,7 +55,7 @@ const PaymentList: React.FC = () => {
   const fetchPayments = useCallback(
     async (page = 1) => {
       try {
-        const response = await api.get(`/api/payments?page=${page}`);
+        const response = await api.get(`/payments?page=${page}`);
         setPayments(response.data.data.data);
         setPageCount(response.data.data.last_page); // تنظیم تعداد صفحات صحیح
       } catch (error) {
@@ -90,7 +90,7 @@ const PaymentList: React.FC = () => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            await api.delete(`/api/payments/${paymentId}`);
+            await api.delete(`/payments/${paymentId}`);
             setPayments((prevPayments) => prevPayments.filter((payment) => payment.id !== paymentId));
             showAlert('حذف شد!', 'پرداخت با موفقیت حذف شد.', 'success');
           } catch (error) {

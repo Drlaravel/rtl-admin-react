@@ -4,7 +4,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext'
 
 
-
+import ZarinpalPayment from './payments/ZarinpalPayment';
 import NotFoundPage from './pages/NotFoundPage';
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
@@ -63,6 +63,7 @@ import UserHostsList from './pages/UserDashborad/UserHostsList';
 import UserSupportsList from './pages/UserDashborad/UserSupportsList';
 import UserInvoiceList from './pages/UserDashborad/UserInvoiceList';
 import UserProjectsList from './pages/UserDashborad/UserProjectsList';
+import UserNotficationCard from './pages/UserDashborad/UserNotficationCard';
 
 
 
@@ -145,7 +146,10 @@ function App() {
                             }
                         />
                         <Route path="projects/list" element={<UserProjectsList />} />
-
+                        
+                        <Route path="notification/list" element={<UserNotficationCard />} />
+                        {/* <Route path="/payment/callback" element={<ZarinpalPayment />} />
+                        <Route path="/payment/failed" element={<PaymentFailed />} /> اختیاری */}
                     </Route>
 
 

@@ -11,7 +11,7 @@ const ECommerce: React.FC = () => {
 
     useEffect(() => {
       // دریافت اطلاعات آماری
-      api.get('/api/ecommerce/stats').then((response) => {
+      api.get('/ecommerce/stats').then((response) => {
 
         setStats(response.data);
       });

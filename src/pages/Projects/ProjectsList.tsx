@@ -39,7 +39,7 @@ const ProjectList: React.FC = () => {
 
     const fetchProjects = useCallback(async (page = 1) => {
         try {
-            const response = await api.get(`/api/projects?page=${page}`);
+            const response = await api.get(`/projects?page=${page}`);
             if (response.data && Array.isArray(response.data.data)) {
                 setProjects(response.data.data);
                 setPageCount(response.data.meta.last_page); // Set the correct number of pages
@@ -75,7 +75,7 @@ const ProjectList: React.FC = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await api.delete(`/api/projects/${projectId}`);
+                    await api.delete(`/projects/${projectId}`);
                     setProjects((prevProjects) => prevProjects.filter((project) => project.id !== projectId));
                     showAlert('حذف شد!', 'پروژه با موفقیت حذف شد.', 'success');
                 } catch (error) {

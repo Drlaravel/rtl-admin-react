@@ -46,7 +46,7 @@ const DomainList: React.FC = () => {
     const fetchDomains = useCallback(
         async (page = 1) => {
             try {
-                const response = await api.get(`/api/domains?page=${page}`);
+                const response = await api.get(`/domains?page=${page}`);
                 console.log(response.data)
                 if (response.data && Array.isArray(response.data.data)) {
                     setDomains(response.data.data);
@@ -86,7 +86,7 @@ const DomainList: React.FC = () => {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        await api.delete(`/api/domains/${domainId}`);
+                        await api.delete(`/domains/${domainId}`);
                         setDomains((prevDomains) => prevDomains.filter((domain) => domain.id !== domainId));
                         showAlert('حذف شد!', 'دامنه با موفقیت حذف شد.', 'success');
                     } catch (error) {
@@ -143,7 +143,7 @@ const DomainList: React.FC = () => {
                     reminder_date: domain.reminder_date,
                     purchase_type: domain.purchase_type === 'ours' ? 'خریداری شده توسط ما' : 'خریداری شده توسط مشتری',
                     price: domain.price ? `${new Intl.NumberFormat().format(domain.price)} تومان` : 'رایگان',
-                    reminder: domain.reminder ? 'معتبر' : 'غیرمعتبر(نیاز به تمدید)',
+                    reminder: domain.reminder ? 'غیرمعتبر(نیاز به تمدید)'  : 'معتبر',
                 }))}
                 renderActions={(domain) => (
                     <DropdownMenu

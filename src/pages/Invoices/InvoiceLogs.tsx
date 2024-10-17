@@ -41,23 +41,30 @@ const InvoiceLogs: React.FC = () => {
   const fetchLogs = useCallback(
     async (page = 1) => {
       try {
-        const response = await api.get(`/api/payemnt-logs?page=${page}`);
-        if (response.data && Array.isArray(response.data.data)) {
-            console.log(response.data)
+        const response = await api.get(`/payemnt-logs?page=${page}`);
+  
+        if (response.status === 200 && response.data.data.length > 0) {
           setLogs(response.data.data);
           setPageCount(response.data.last_page); // تنظیم تعداد صفحات صحیح
         } else {
-          throw new Error('Invalid response structure');
+          showAlert('پیام', 'هیچ لاگ پرداختی یافت نشد.', 'warning');
+          setLogs([]);
         }
+  
       } catch (error) {
-        console.error('Error fetching logs:', error);
-        showAlert('خطا!', 'دریافت لاگ‌ها با مشکل مواجه شد.', 'error');
+        if (error.response && error.response.status === 404) {
+          showAlert('پیام', 'هیچ لاگ پرداختی یافت نشد.', 'warning');
+        } else {
+          console.error('Error fetching logs:', error);
+          showAlert('خطا!', 'دریافت لاگ‌ها با مشکل مواجه شد.', 'error');
+        }
       } finally {
         setLoading(false);
       }
     },
     [showAlert]
   );
+  
 
   useEffect(() => {
     fetchLogs(currentPage + 1); // بارگذاری لاگ‌ها بر اساس صفحه جاری
@@ -101,14 +108,14 @@ const InvoiceLogs: React.FC = () => {
       </div>
 
       <TableComponent
-        headers={['ایدی', 'شناسه پرداخت', 'شناسه کاربر', 'IP کاربر', 'عملیات', 'داده']}
+        headers={['ایدی', 'شناسه پرداخت', 'شناسه کاربر', 'IP کاربر', 'عملیات']}
         data={logs.map((log) => ({
           id: log.id,
           payment_id: log.payment_id,
           user_id: log.user_id,
           user_ip: log.user_ip,
           action: log.action,
-          data: log.data,
+          
         }))}
        
       />

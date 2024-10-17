@@ -33,7 +33,7 @@ const SmsSettings: React.FC = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await api.get('/api/sms/settings');
+        const response = await api.get('/sms/settings');
         setSettings(response.data.data);
         Object.entries(response.data.data).forEach(([key, value]) => setValue(key as keyof SmsSettingsFormData, value));
       } catch (error) {
@@ -53,7 +53,7 @@ const SmsSettings: React.FC = () => {
     };
 
     try {
-      await api.post('/api/sms/settings', updatedData);
+      await api.post('/sms/settings', updatedData);
       showAlert('موفقیت', 'تنظیمات با موفقیت ذخیره شد.', 'success');
     } catch (error) {
       console.error('Error saving SMS settings:', error);
@@ -78,7 +78,7 @@ const SmsSettings: React.FC = () => {
                 <input
                   type="text"
                   id="sms_username"
-                  {...register('sms_username', { required: 'نام کاربری SMS الزامی است.' })}
+                  {...register('sms_username')}
                   className={`w-full rounded-sm border ${errors.sms_username ? 'border-red-500' : 'border-stroke'} bg-transparent py-3 px-4.5 text-black dark:border-form-strokedark dark:bg-form-input dark:text-white`}
                   defaultValue={settings.sms_username}
                 />
@@ -91,7 +91,7 @@ const SmsSettings: React.FC = () => {
                 <input
                   type="text"
                   id="sms_password"
-                  {...register('sms_password', { required: 'رمز عبور SMS الزامی است.' })}
+                  {...register('sms_password')}
                   className={`w-full rounded-sm border ${errors.sms_password ? 'border-red-500' : 'border-stroke'} bg-transparent py-3 px-4.5 text-black dark:border-form-strokedark dark:bg-form-input dark:text-white`}
                   defaultValue={settings.sms_password}
                 />
@@ -104,7 +104,7 @@ const SmsSettings: React.FC = () => {
                 <input
                   type="text"
                   id="sms_api_key"
-                  {...register('sms_api_key', { required: 'کلید API SMS الزامی است.' })}
+                  {...register('sms_api_key')}
                   className={`w-full rounded-sm border ${errors.sms_api_key ? 'border-red-500' : 'border-stroke'} bg-transparent py-3 px-4.5 text-black dark:border-form-strokedark dark:bg-form-input dark:text-white`}
                   defaultValue={settings.sms_api_key}
                 />
@@ -117,7 +117,7 @@ const SmsSettings: React.FC = () => {
                 <input
                   type="text"
                   id="sms_line_number"
-                  {...register('sms_line_number', { required: 'شماره خط SMS الزامی است.' })}
+                  {...register('sms_line_number')}
                   className={`w-full rounded-sm border ${errors.sms_line_number ? 'border-red-500' : 'border-stroke'} bg-transparent py-3 px-4.5 text-black dark:border-form-strokedark dark:bg-form-input dark:text-white`}
                   defaultValue={settings.sms_line_number}
                 />

@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate, useParams } from 'react-router-dom';
 import Select, { StylesConfig } from 'react-select';
+import FormattedNumberInput from "../../components/FormattedNumberInput"
 
 const MySwal = withReactContent(Swal);
 
@@ -91,7 +92,7 @@ const HostEdit: React.FC = () => {
 
     const onSubmit = async (data: HostFormData) => {
         try {
-            await api.put(`/api/hosts/${id}`, data);
+            await api.put(`/hosts/${id}`, data);
             showAlert('موفقیت', 'هاست با موفقیت ویرایش شد.', 'success');
             reset();
             navigate('/admin/hosts/list');
@@ -104,7 +105,7 @@ const HostEdit: React.FC = () => {
     useEffect(() => {
         const fetchHostData = async () => {
             try {
-                const response = await api.get(`/api/hosts/${id}`);
+                const response = await api.get(`/hosts/${id}`);
                 const hostData = response.data.data;
                 console.log(hostData)
                 setValue('username', hostData.username);
@@ -138,8 +139,8 @@ const HostEdit: React.FC = () => {
         const fetchAllData = async () => {
             try {
                 const [usersResponse, projectsResponse] = await Promise.all([
-                    api.get('/api/all-users'),
-                    api.get('/api/all-projects'),
+                    api.get('/all-users'),
+                    api.get('/all-projects'),
                 ]);
 
                 const usersData = usersResponse.data.map((user: any) => ({
@@ -189,7 +190,7 @@ const HostEdit: React.FC = () => {
                                 <label className="block mb-2.5 text-black dark:text-white">نام کاربری</label>
                                 <input
                                     type="text"
-                                    {...register('username', { required: 'نام کاربری الزامی است.' })}
+                                    {...register('username')}
                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.username ? 'border-red-500' : 'border-stroke'}`}
                                     placeholder="نام کاربری"
                                 />
@@ -200,7 +201,7 @@ const HostEdit: React.FC = () => {
                                 <label className="block mb-2.5 text-black dark:text-white">رمز عبور</label>
                                 <input
                                     type="password"
-                                    {...register('password', { required: 'رمز عبور الزامی است.' })}
+                                    {...register('password')}
                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.password ? 'border-red-500' : 'border-stroke'}`}
                                     placeholder="رمز عبور"
                                 />
@@ -212,7 +213,7 @@ const HostEdit: React.FC = () => {
                             <div className="my-4.5">
                                 <label className="block mb-2.5 text-black dark:text-white">لینک هاست</label>
                                 <input
-                                    type="text"
+                                    type="url"
                                     {...register('link', { required: 'لینک هاست الزامی است.' })}
                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.link ? 'border-red-500' : 'border-stroke'}`}
                                     placeholder="لینک هاست"
@@ -224,7 +225,7 @@ const HostEdit: React.FC = () => {
                                 <label className="block mb-2.5 text-black dark:text-white">فضای هاست</label>
                                 <input
                                     type="text"
-                                    {...register('space', { required: 'فضای هاست الزامی است.' })}
+                                    {...register('space')}
                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.space ? 'border-red-500' : 'border-stroke'}`}
                                     placeholder="فضای هاست"
                                 />
@@ -276,7 +277,7 @@ const HostEdit: React.FC = () => {
                             <div className="my-4.5">
                                 <label className="block mb-2.5 text-black dark:text-white">نوع خرید</label>
                                 <select
-                                    {...register('purchase_type', { required: 'نوع خرید الزامی است.' })}
+                                    {...register('purchase_type')}
                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.purchase_type ? 'border-red-500' : 'border-stroke'}`}
                                 >
                                     <option value="ours">خریداری شده توسط ما</option>
@@ -291,8 +292,8 @@ const HostEdit: React.FC = () => {
                                     {...register('reminder')}
                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.reminder ? 'border-red-500' : 'border-stroke'}`}
                                 >
-                                    <option value="0">فعال</option>
-                                    <option value="1">غیرفعال</option>
+                                    <option value="0">معتبر</option>
+                                    <option value="1">غیرمعتبر</option>
                                 </select>
                             </div>
                         </div>
@@ -309,22 +310,24 @@ const HostEdit: React.FC = () => {
                             </div>
                         )}
 
-                        <div className="my-4.5">
-                            <label className="block mb-2.5 text-black dark:text-white">قیمت هاست</label>
-                            <input
-                                type="text"
-                                {...register('price')}
-                                className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.price ? 'border-red-500' : 'border-stroke'}`}
-                                placeholder="قیمت هاست"
-                            />
-                            {errors.price && <p className="text-danger text-3 mt-2.5">{errors.price.message}</p>}
-                        </div>
+
+                        <FormattedNumberInput
+                            register={register}
+                            setValue={setValue}
+                            label={'هزینه هاست'}
+                            name="price"  // نام فیلد
+                            placeholder="هزینه هاست"
+                            errors={errors}
+                            validation={{ required: 'هزینه هاست الزامی است.', valueAsNumber: true }}  // اعتبارسنجی
+                            className={`my-5`}
+                            defaultValue={watch('price')}
+                        />
 
                         {/* Associate With: Project or User */}
                         <div className="my-4.5">
                             <label className="block mb-2.5 text-black dark:text-white">اضافه کردن به:</label>
                             <select
-                                {...register('associated_with', { required: 'این فیلد الزامی است.' })}
+                                {...register('associated_with')}
                                 value={watch('associated_with')} // اضافه کردن watch برای مشاهده مقدار فعلی
                                 onChange={(e) => {
                                     const value = e.target.value;
@@ -374,14 +377,6 @@ const HostEdit: React.FC = () => {
                         )}
 
 
-                        <div className="my-4.5">
-                            <label className="block mb-2.5 text-black dark:text-white">ایجاد فاکتور</label>
-                            <input
-                                type="checkbox"
-                                {...register('shouldCreateInvoice')}
-                                className="w-4 h-4 text-primary border-stroke dark:border-form-strokedark dark:bg-form-input rounded"
-                            />
-                        </div>
 
                         <button type="submit" className="mt-4 bg-primary text-white py-2 px-4 rounded">
                             ویرایش هاست

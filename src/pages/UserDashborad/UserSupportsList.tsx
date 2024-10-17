@@ -48,7 +48,7 @@ const UserSupportsList: React.FC = () => {
   const fetchSupports = useCallback(
     async (page = 1) => {
       try {
-        const response = await api.get(`/api/user/supports?page=${page}`);
+        const response = await api.get(`/user/supports?page=${page}`);
         console.log(response.data); // بررسی داده‌های دریافتی
 
           setSupports(response.data.data.data);

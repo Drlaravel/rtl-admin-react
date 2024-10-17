@@ -18,7 +18,7 @@ const TableOne: React.FC = () => {
   // درخواست به API برای دریافت فاکتورها
   const fetchPayments = useCallback(async () => {
     try {
-      const response = await api.get('/api/payments');
+      const response = await api.get('/payments');
 
       setPayments(response.data.data.data); // فرض می‌کنیم که داده‌ها در فیلد `data` هستند
     } catch (error) {

@@ -43,7 +43,7 @@ const SignIn: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await api.post('/api/login', {
+      const response = await api.post('/login', {
         email,
         password,
       });
@@ -55,13 +55,14 @@ const SignIn: React.FC = () => {
       // اصلاح ترتیب پارامترها در اینجا
       authContext?.login(token, userRole, user.name); // ذخیره نقش کاربر و نام کاربر به ترتیب صحیح
 
-      if (userRole === 'admin') {
+      if (userRole === 'admin' || userRole === 'editor') {
         navigate('/admin');
       } else {
         navigate('/user');
       }
     } catch (error: any) {
       console.log(error.response?.data?.error)
+      console.log(error.response)
       setErrors((prevErrors) => ({
         ...prevErrors,
         general: error.response?.data?.error || 'خطایی رخ داده است.',

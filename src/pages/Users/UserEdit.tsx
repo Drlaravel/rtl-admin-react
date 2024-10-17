@@ -83,7 +83,7 @@ const UserEdit: React.FC = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await api.get(`/api/users/${id}`);
+                const response = await api.get(`/users/${id}`);
                 const userData = response.data.data;
                 console.log(userData)
                 setValue('name', userData.name);
@@ -122,7 +122,7 @@ const UserEdit: React.FC = () => {
                 updateData.password_confirmation = password_confirmation;
             }
 
-            await api.put(`/api/users/${id}`, updateData);
+            await api.put(`/users/${id}`, updateData);
 
             showAlert('موفقیت', 'کاربر با موفقیت به‌روزرسانی شد.', 'success');
             navigate('/admin/users/list');
@@ -155,7 +155,7 @@ const UserEdit: React.FC = () => {
                                 <label className="block mb-2.5 text-black dark:text-white">نام</label>
                                 <input
                                     type="text"
-                                    {...register('name', { required: 'نام الزامی است.' })}
+                                    {...register('name')}
                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.name ? 'border-red-500' : 'border-stroke'}`}
                                     placeholder="نام کاربر"
                                 />

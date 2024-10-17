@@ -13,7 +13,7 @@ const DropdownNotification = () => {
         if (dropdownOpen) {
             const fetchNotifications = async () => {
                 try {
-                    const response = await api.get('/api/notifications?limit=4'); // درخواست به API برای دریافت ۴ نوتیفیکیشن
+                    const response = await api.get('/notifications?limit=4'); // درخواست به API برای دریافت ۴ نوتیفیکیشن
                     setNotifications(response.data.data); // فرض بر این است که نوتیفیکیشن‌ها در فیلد data قرار دارند
                 } catch (error) {
                     console.error('Error fetching notifications:', error);

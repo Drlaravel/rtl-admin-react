@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
 import Select, { StylesConfig } from 'react-select';
+import FormattedNumberInput from "../../components/FormattedNumberInput"
 
 const MySwal = withReactContent(Swal);
 
@@ -84,7 +85,7 @@ const InvoiceAdd: React.FC = () => {
 
     const onSubmit = async (data: InvoiceFormData) => {
         try {
-            await api.post('/api/payments', data);
+            await api.post('/payments', data);
             showAlert('موفقیت', 'فاکتور با موفقیت ایجاد شد.', 'success');
             navigate('/admin/invoices/list');
         } catch (error) {
@@ -97,10 +98,10 @@ const InvoiceAdd: React.FC = () => {
         const fetchAllData = async () => {
             try {
                 const [projectsResponse, hostsResponse, domainsResponse, supportsResponse] = await Promise.all([
-                    api.get('/api/all-projects'),
-                    api.get('/api/hosts'),
-                    api.get('/api/domains'),
-                    api.get('/api/supports'),
+                    api.get('/all-projects'),
+                    api.get('/hosts'),
+                    api.get('/domains'),
+                    api.get('/supports'),
                 ]);
 
                 setProjects(projectsResponse.data.map((project: any) => ({ value: project.id, label: project.name })));
@@ -155,16 +156,17 @@ const InvoiceAdd: React.FC = () => {
                                 {errors.title && <p className="text-danger text-3 mt-2.5">{errors.title.message}</p>}
                             </div>
 
-                            <div className="my-4.5">
-                                <label className="block mb-2.5 text-black dark:text-white">مبلغ</label>
-                                <input
-                                    type="number"
-                                    {...register('amount', { required: 'مبلغ الزامی است.', min: 1 })}
-                                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.amount ? 'border-red-500' : 'border-stroke'}`}
-                                    placeholder="مبلغ فاکتور"
-                                />
-                                {errors.amount && <p className="text-danger text-3 mt-2.5">{errors.amount.message}</p>}
-                            </div>
+                            <FormattedNumberInput
+                            register={register}
+                            setValue={setValue}
+                            label={'مبلغ فاکتور'}
+                            name="price"  // نام فیلد
+                            placeholder="مبلغ فاکتور"
+                            errors={errors}
+                            validation={{ required: 'مبلغ فاکتور الزامی است.', valueAsNumber: true }}  // اعتبارسنجی
+                            className={`my-5`}
+                          
+                        />
                         </div>
 
                         {/* تاریخ‌ها */}
@@ -203,7 +205,7 @@ const InvoiceAdd: React.FC = () => {
                             <div className="my-4.5">
                                 <label className="block mb-2.5 text-black dark:text-white">وضعیت پرداخت</label>
                                 <select
-                                    {...register('status', { required: 'وضعیت پرداخت الزامی است.' })}
+                                    {...register('status')}
                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.status ? 'border-red-500' : 'border-stroke'}`}
                                 >
                                     <option value="paid">پرداخت شده</option>
@@ -216,7 +218,7 @@ const InvoiceAdd: React.FC = () => {
                             <div className="my-4.5">
                                 <label className="block mb-2.5 text-black dark:text-white">نوع پرداخت</label>
                                 <select
-                                    {...register('payment_type', { required: 'نوع پرداخت الزامی است.' })}
+                                    {...register('payment_type')}
                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.payment_type ? 'border-red-500' : 'border-stroke'}`}
                                 >
                                     <option value="cash">نقدی</option>
@@ -231,7 +233,7 @@ const InvoiceAdd: React.FC = () => {
                             <div className="my-4.5">
                                 <label className="block mb-2.5 text-black dark:text-white">انتخاب نوع آیتم</label>
                                 <select
-                                    {...register('item_type', { required: 'نوع آیتم الزامی است.' })}
+                                    {...register('item_type')}
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white"
                                 >
                                     <option value="project">پروژه</option>

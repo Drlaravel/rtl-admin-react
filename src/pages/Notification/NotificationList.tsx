@@ -27,7 +27,7 @@ const NotificationTable: React.FC = () => {
 
     const fetchNotifications = useCallback(async (page = 1) => {
         try {
-            const response = await api.get(`/api/notifications?page=${page}`);
+            const response = await api.get(`/notifications?page=${page}`);
             console.log(response.data.data)
             setNotifications(response.data.data);
             setPageCount(response.data.last_page);
@@ -45,7 +45,7 @@ const NotificationTable: React.FC = () => {
 
     const markAsRead = async (notificationId: number) => {
         try {
-            await api.post(`/api/notifications/${notificationId}/read`);
+            await api.post(`/notifications/${notificationId}/read`);
             MySwal.fire('موفق!', 'وضعیت نوتیفیکیشن تغییر کرد شد.', 'success');
             fetchNotifications(currentPage + 1); // به‌روز رسانی پس از موفقیت
         } catch (error) {

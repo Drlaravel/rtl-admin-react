@@ -38,7 +38,7 @@ const InvoicePage: React.FC = () => {
   useEffect(() => {
     const fetchPayment = async () => {
       try {
-        const response = await api.get(`/api/invoice/${id}`);
+        const response = await api.get(`/invoice/${id}`);
         console.log(response.data); // بررسی اطلاعات دریافتی
         setPayment(response.data);
       } catch (error) {
@@ -54,7 +54,7 @@ const InvoicePage: React.FC = () => {
   };
 
   const handleDownload = () => {
-    window.location.href = `/api/invoice/download/${id}`; // مسیر API برای دانلود PDF
+    window.location.href = (`/invoice/download/${id}`); // مسیر API برای دانلود PDF
   };
 
   if (!payment) {

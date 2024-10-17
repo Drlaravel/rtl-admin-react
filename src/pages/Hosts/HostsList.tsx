@@ -21,6 +21,8 @@ interface Host {
   price: number;
   purchase_type: 'ours' | 'customer';
   reminder: boolean;
+  user_name: string | null;
+  project_name: string | null;
 }
 
 const HostList: React.FC = () => {
@@ -46,7 +48,7 @@ const HostList: React.FC = () => {
   const fetchHosts = useCallback(
     async (page = 1) => {
       try {
-        const response = await api.get(`/api/hosts?page=${page}`);
+        const response = await api.get(`/hosts?page=${page}`);
         console.log(response.data)
         if (response.data && Array.isArray(response.data.data)) {
           setHosts(response.data.data);
@@ -86,7 +88,7 @@ const HostList: React.FC = () => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            await api.delete(`/api/hosts/${hostId}`);
+            await api.delete(`/hosts/${hostId}`);
             setHosts((prevHosts) => prevHosts.filter((host) => host.id !== hostId));
             showAlert('حذف شد!', 'هاست با موفقیت حذف شد.', 'success');
           } catch (error) {
@@ -134,9 +136,10 @@ const HostList: React.FC = () => {
       </div>
 
       <TableComponent
-        headers={['ایدی', 'نام کاربری', 'لینک', 'تاریخ انقضا', 'تاریخ یادآوری', 'فضا', 'قیمت', 'نوع خرید', 'یاداوری']}
+        headers={['ایدی','نام پروژه/کاربر' ,'نام کاربری', 'لینک', 'تاریخ انقضا', 'تاریخ یادآوری', 'فضا', 'قیمت', 'نوع خرید', 'یاداوری']}
         data={hosts.map((host) => ({
           id: host.id,
+          name: host.project_name || host.user_name,
           username: host.username,
           link: <a href={host.link} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">لینک</a>,
           expiry_date: host.expiry_date,
@@ -144,7 +147,7 @@ const HostList: React.FC = () => {
           space: host.space,
           price: host.price ? `${new Intl.NumberFormat().format(host.price)} تومان` : 'رایگان',
           purchase_type: host.purchase_type === 'ours' ? 'خریداری شده توسط ما' : 'خریداری شده توسط مشتری',
-          reminder: host.reminder ? 'معتبر' : 'غیرمعتبر(نیاز به تمدید)',
+          reminder: host.reminder ? 'غیرمعتبر(نیاز به تمدید)'  : 'معتبر',
         }))}
       
         renderActions={(host) => (

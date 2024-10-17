@@ -27,7 +27,7 @@ const SmsLogList: React.FC = () => {
   // تابع برای دریافت لاگ‌های پیامک از سرور
   const fetchLogs = useCallback(async (page = 1) => {
     try {
-      const response = await api.get(`/api/sms/logs?page=${page}`);
+      const response = await api.get(`/sms/logs?page=${page}`);
       setLogs(response.data.data.data); // تنظیم داده‌های لاگ
       setPageCount(response.data.data.last_page); // تنظیم تعداد صفحات
       setCurrentPage(response.data.data.current_page - 1); // تنظیم صفحه جاری

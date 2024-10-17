@@ -45,7 +45,7 @@ const UserDomainList: React.FC = () => {
     const fetchDomains = useCallback(
         async (page = 1) => {
             try {
-                const response = await api.get(`/api/user/domains?page=${page}`);
+                const response = await api.get(`/user/domains?page=${page}`);
                 console.log(response.data)
 
                     setDomains(response.data.data.data);

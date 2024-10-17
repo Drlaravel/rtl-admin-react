@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
 import Select, { StylesConfig, InputActionMeta } from 'react-select';
-
+import FormattedNumberInput from "../../components/FormattedNumberInput"
 const MySwal = withReactContent(Swal);
 
 const customStyles: StylesConfig<any, false> = {
@@ -85,13 +85,13 @@ const DomainAdd: React.FC = () => {
 
   const onSubmit = async (data: DomainFormData) => {
     try {
-      await api.post('/api/domains', data);
+      await api.post('/domains', data);
       showAlert('موفقیت', 'دامنه با موفقیت ایجاد شد.', 'success');
       reset();
       navigate('/admin/domains/list');
     } catch (error) {
       console.error('Error creating domain:', error);
-      showAlert('خطا!', 'ایجاد دامنه با مشکل مواجه شد.', 'error');
+      showAlert('خطا!', 'ایجاد دامنه  با مشکل مواجه شد از تکراری نبود اطلاعات مطمئن شوید.', 'error');
     }
   };
 
@@ -100,8 +100,8 @@ const DomainAdd: React.FC = () => {
     const fetchAllData = async () => {
       try {
         const [usersResponse, projectsResponse] = await Promise.all([
-          api.get('/api/all-users'),
-          api.get('/api/all-projects'),
+          api.get('/all-users'),
+          api.get('/all-projects'),
         ]);
         console.log(usersResponse.data)
         console.log(projectsResponse.data)
@@ -175,16 +175,18 @@ const DomainAdd: React.FC = () => {
                 {errors.name && <p className="text-danger text-3 mt-2.5">{errors.name.message}</p>}
               </div>
 
-              <div className="my-4.5">
-                <label className="block mb-2.5 text-black dark:text-white">هزینه دامنه</label>
-                <input
-                  type="text"
-                  {...register('price', { required: 'هزینه دامنه الزامی است.' })}
-                  className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.price ? 'border-red-500' : 'border-stroke'}`}
-                  placeholder="هزینه دامنه"
-                />
-                {errors.price && <p className="text-danger text-3 mt-2.5">{errors.price.message}</p>}
-              </div>
+             
+              <FormattedNumberInput
+                register={register}
+                setValue={setValue}
+                label={'هزینه دامنه'}
+                name="price"  // نام فیلد
+                placeholder="هزینه دامنه"
+                errors={errors}
+                validation={{ required: 'هزینه دامنه الزامی است.', valueAsNumber: true }}  // اعتبارسنجی
+                className={`my-5`}
+                
+              />
 
             </div>
             <div className="my-4.5 grid md:grid-cols-2 gap-6">
@@ -225,7 +227,7 @@ const DomainAdd: React.FC = () => {
               <div className="my-4.5">
                 <label className="block mb-2.5 text-black dark:text-white">نوع خرید</label>
                 <select
-                  {...register('purchase_type', { required: 'نوع خرید الزامی است.' })}
+                  {...register('purchase_type')}
                   className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.purchase_type ? 'border-red-500' : 'border-stroke'}`}
                 >
                   <option value="ours">خریداری شده توسط ما</option>
@@ -238,7 +240,7 @@ const DomainAdd: React.FC = () => {
               <div className="my-4.5">
                 <label className="block mb-2.5 text-black dark:text-white">یادآور</label>
                 <select
-                  {...register('reminder', { required: 'وضعیت یادآور الزامی است.' })}
+                  {...register('reminder')}
                   className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.reminder ? 'border-red-500' : 'border-stroke'}`}
                 >
                   <option value="0">فعال</option>
@@ -252,7 +254,7 @@ const DomainAdd: React.FC = () => {
             <div className="my-4.5">
               <label className="block mb-2.5 text-black dark:text-white">اضافه کردن به:</label>
               <select
-                {...register('associated_with', { required: 'این فیلد الزامی است.' })}
+                {...register('associated_with', { required: 'یک مورد  الزامی است.' })}
                 className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black dark:border-form-strokedark dark:bg-form-input dark:text-white`}
               >
                 <option value="">انتخاب کنید</option>
@@ -298,7 +300,7 @@ const DomainAdd: React.FC = () => {
                   <label className="block mb-2.5 text-black dark:text-white">یوزرنیم</label>
                   <input
                     type="text"
-                    {...register('purchase_site_username', { required: 'یوزرنیم الزامی است.' })}
+                    {...register('purchase_site_username')}
                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.purchase_site_username ? 'border-red-500' : 'border-stroke'}`}
                     placeholder="یوزرنیم"
                   />
@@ -309,7 +311,7 @@ const DomainAdd: React.FC = () => {
                   <label className="block mb-2.5 text-black dark:text-white">پسورد</label>
                   <input
                     type="password"
-                    {...register('purchase_site_password', { required: 'پسورد الزامی است.' })}
+                    {...register('purchase_site_password')}
                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.purchase_site_password ? 'border-red-500' : 'border-stroke'}`}
                     placeholder="پسورد"
                   />
@@ -320,7 +322,7 @@ const DomainAdd: React.FC = () => {
                   <label className="block mb-2.5 text-black dark:text-white">آدرس سایت خریداری شده</label>
                   <input
                     type="text"
-                    {...register('purchase_site_url', { required: 'آدرس سایت الزامی است.' })}
+                    {...register('purchase_site_url')}
                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.purchase_site_url ? 'border-red-500' : 'border-stroke'}`}
                     placeholder="آدرس سایت خریداری شده"
                   />

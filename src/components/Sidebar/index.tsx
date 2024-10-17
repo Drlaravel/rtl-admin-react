@@ -292,14 +292,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </li>
 
                     <li>
-                      <NavLink
+                    <NavLink
                         to="/admin/invoices/logs"
                         className={({ isActive }) =>
                           `group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${isActive ? '!text-white' : ''}`
                         }
                       >
-                      لاگ های پرداخت
-                      </NavLink>
+                        لاگ های پرداخت
+                        </NavLink>
+
                     </li>
                   </ul>
                 </div>
@@ -420,6 +421,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               لاگ ها
             </NavLink>
           </li>
+          <li>
+          <a
+              href="https://api.crmtehransite.com//log-viewer"
+              target="_blank" // برای باز شدن لینک در یک تب جدید
+              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 mt-3 ${pathname.startsWith('/smses') ? 'bg-graydark dark:bg-meta-4' : ''}`}
+              >لاگ های </a>
+          </li>
+         
         </ul>
       </nav>
     </aside>
