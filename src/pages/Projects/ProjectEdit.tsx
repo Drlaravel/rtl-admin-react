@@ -110,14 +110,26 @@ const ProjectEdit: React.FC = () => {
         },
     });
 
-    const { fields: paymentFields, replace: replacePayments } = useFieldArray({
+    // For payments
+    const {
+        fields: paymentFields,
+        replace: replacePayments,
+        append: appendPayment,
+        remove: removePayment,
+    } = useFieldArray({
         control,
-        name: 'payments'
+        name: 'payments',
     });
 
-    const { fields: domainFields, replace: replaceDomains } = useFieldArray({
+    // For domains
+    const {
+        fields: domainFields,
+        replace: replaceDomains,
+        append: appendDomain,
+        remove: removeDomain,
+    } = useFieldArray({
         control,
-        name: 'domains'
+        name: 'domains',
     });
 
     const [step, setStep] = useState<number>(1);
@@ -214,7 +226,9 @@ const ProjectEdit: React.FC = () => {
                     }
 
                 });
-
+                console.log("line 229 response:", JSON.stringify(response, null, 2)); // چاپ داده‌های response به صورت خوانا
+                console.log("line 230 data:", JSON.stringify(data, null, 2)); // چاپ داده‌های فرم ارسال شده
+                
                 showAlert('موفقیت', 'پروژه با موفقیت به‌روزرسانی شد.', 'success');
                 navigate('/admin/projects/list');
             } catch (error) {
@@ -579,7 +593,14 @@ const ProjectEdit: React.FC = () => {
                                     <button
                                         type="button"
                                         onClick={() =>
-                                            appendPayment({ title: "", amount: 0, status: "pending", date: "", due_date: "", expiry_date: "" })
+                                            appendPayment({
+                                                title: '',
+                                                amount: 0,
+                                                status: 'pending',
+                                                date: '',
+                                                due_date: '',
+                                                expiry_date: '',
+                                            })
                                         }
                                         className="flex items-center justify-center gap-2 rounded bg-primary py-2.5 px-4.5 font-medium text-white"
                                     >
@@ -706,7 +727,15 @@ const ProjectEdit: React.FC = () => {
                                     </div>
                                     <button
                                         type="button"
-                                        onClick={() => appendDomain({ name: '', expiry_date: '', reminder_date: '', purchase_type: 'ours' })}
+                                        onClick={() =>
+                                            appendDomain({
+                                                name: '',
+                                                expiry_date: '',
+                                                reminder_date: '',
+                                                purchase_type: 'ours',
+                                                status: 'yes'
+                                            })
+                                        }
                                         className="flex items-center justify-center gap-2 rounded bg-primary py-2.5 px-4.5 font-medium text-white"
                                     >
                                         اضافه کردن دامنه جدید
@@ -752,7 +781,7 @@ const ProjectEdit: React.FC = () => {
                                             <div className="mb-4.5">
                                                 <label className="mb-2.5 block text-black dark:text-white">پسورد</label>
                                                 <input
-                                                    type="password"
+                                                    type="text"
                                                     {...register('host.password')}
                                                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.host?.password ? 'border-red-500' : 'border-stroke'}`}
                                                     placeholder="پسورد هاست را وارد کنید"
@@ -799,6 +828,16 @@ const ProjectEdit: React.FC = () => {
                                                     placeholder="تاریخ یادآوری را وارد کنید"
                                                 />
                                                 {errors.host?.reminder_date && <p className="text-danger text-3 mt-2.5">{errors.host.reminder_date.message}</p>}
+                                            </div>
+                                            <div className="mb-4.5">
+                                                <label className="mb-2.5 block text-black dark:text-white">فضای هاست</label>
+                                                <input
+                                                    type="text"
+                                                    {...register('host.space')}
+                                                    className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${errors.host?.space ? 'border-red-500' : 'border-stroke'}`}
+                                                    placeholder="فضای هاست را وارد کنید"
+                                                />
+                                                {errors.host?.space && <p className="text-danger text-3 mt-2.5">{errors.host.space.message}</p>}
                                             </div>
                                         </>
                                     )}
@@ -882,7 +921,7 @@ const ProjectEdit: React.FC = () => {
                                             <FormattedNumberInput
                                                 register={register}
                                                 setValue={setValue}
-                                                 label="قیمت هاست"
+                                                label="قیمت هاست"
                                                 name="host.price"  // نام فیلد
                                                 placeholder="قیمت هاست را وارد کنید"
                                                 errors={errors}
